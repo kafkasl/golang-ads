@@ -1,56 +1,47 @@
 package structures
 
-import (
-	"fmt"
-	"strings"
-)
+var SON_SYMBOL = '├'
+var LAST_SON_SYMBOL = '└'
 
 type TrieNode struct {
 	children  map[rune]*TrieNode
 	endOfWord bool
 }
 
-func (tn TrieNode) printWords(prefix string) {
-	if tn.endOfWord {
-		fmt.Printf("Appending word: %v\n", prefix)
-	}
-	if len(tn.children) > 0 {
-		// fmt.Printf("Children: %v", tn.children)
-		for key, child := range tn.children {
-			child.printWords(prefix + string(key))
-		}
-	}
-}
-
-func (tn TrieNode) recursiveToString(father TrieNode, prefix string, c chan string) {
-	if tn.endOfWord {
-		// *words = append(*words, prefix)
-		fmt.Printf("Appending word: %v\n", prefix)
-		c <- prefix
-	}
-	if len(tn.children) > 0 {
-		for key, child := range tn.children {
-			child.recursiveToString(father, prefix+string(key), c)
-		}
-	}
-	// if &tn == &father {
-	fmt.Println("closing channel")
-	close(c)
-	// }
-}
-
-func (tn TrieNode) String() string {
-	// fmt.Printf("Printing trieNode%v\n", tn)
+func (tn TrieNode) Words(currentWord string) []string {
 	words := []string{}
-	c := make(chan string)
-	tn.recursiveToString(tn, "", c)
-	for word := range c {
-		words = append(words, word)
-		fmt.Printf("Received word: %v", word)
+	if tn.endOfWord {
+		return append(words, currentWord)
 	}
+	if len(tn.children) > 0 {
+		for key, child := range tn.children {
+			words = append(words, child.Words(currentWord+string(key))...)
+		}
+	}
+	return words
+}
 
-	fmt.Printf("Printing words%v\n", words)
-	return strings.Join(words, "\n")
+func (tn TrieNode) toString(prefix string) string {
+	var text string = ""
+	var nprefix string
+
+	idx := 0
+	for key, child := range tn.children {
+
+		if idx < len(tn.children)-1 {
+			text += prefix + " ├─ " + string(key) + "\n"
+			nprefix = prefix + " │ "
+		} else {
+			text += prefix + " └─ " + string(key) + "\n"
+			nprefix = prefix + "   "
+		}
+		text += child.toString(nprefix)
+		idx++
+	}
+	return text
+}
+func (tn TrieNode) String() string {
+	return tn.toString("")
 }
 
 type Trie struct {
@@ -63,7 +54,11 @@ func NewTrie() Trie {
 }
 
 func (t Trie) String() string {
-	return t.root.String()
+	return "Trie:\n" + t.root.String()
+}
+
+func (t Trie) Words() []string {
+	return t.root.Words("")
 }
 
 func (t Trie) Insert(key string) {
@@ -83,8 +78,6 @@ func (t Trie) Insert(key string) {
 func (t Trie) Search(key string) bool {
 	currentNode := t.root
 	for _, letter := range key {
-		// fmt.Println("Proceeding to test key")
-		// fmt.Printf("Node %v", currentNode)
 		if val, ok := currentNode.children[letter]; ok {
 			currentNode = val
 		} else {
@@ -93,45 +86,3 @@ func (t Trie) Search(key string) bool {
 	}
 	return currentNode.endOfWord
 }
-
-// def _charToIndex(self,ch):
-//
-//     // private helper function
-//     // Converts key current character into index
-//     // use only 'a' through 'z' and lower case
-//
-//     return ord(ch)-ord('a')
-//
-//
-// def insert(self,key):
-//
-//     // If not present, inserts key into trie
-//     // If the key is prefix of trie node,
-//     // just marks leaf node
-//     pCrawl = self.root
-//     length = len(key)
-//     for level in range(length):
-//         index = self._charToIndex(key[level])
-//
-//         // if current character is not present
-//         if not pCrawl.children[index]:
-//             pCrawl.children[index] = self.getNode()
-//         pCrawl = pCrawl.children[index]
-//
-//     // mark last node as leaf
-//     pCrawl.isEndOfWord = True
-//
-// def search(self, key):
-//
-//     // Search key in the trie
-//     // Returns true if key presents
-//     // in trie, else false
-//     pCrawl = self.root
-//     length = len(key)
-//     for level in range(length):
-//         index = self._charToIndex(key[level])
-//         if not pCrawl.children[index]:
-//             return False
-//         pCrawl = pCrawl.children[index]
-//
-//     return pCrawl != None and pCrawl.isEndOfWord
