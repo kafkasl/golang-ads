@@ -1,7 +1,14 @@
 package structures
 
-var SON_SYMBOL = '├'
-var LAST_SON_SYMBOL = '└'
+import (
+	"sort"
+)
+
+type RuneSlice []rune
+
+func (p RuneSlice) Len() int           { return len(p) }
+func (p RuneSlice) Less(i, j int) bool { return p[i] < p[j] }
+func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 type TrieNode struct {
 	children  map[rune]*TrieNode
@@ -14,8 +21,14 @@ func (tn TrieNode) Words(currentWord string) []string {
 		return append(words, currentWord)
 	}
 	if len(tn.children) > 0 {
-		for key, child := range tn.children {
-			words = append(words, child.Words(currentWord+string(key))...)
+		keys := make([]rune, 0)
+		for k, _ := range tn.children {
+			keys = append(keys, k)
+		}
+		sort.Sort(RuneSlice(keys))
+
+		for _, key := range keys {
+			words = append(words, tn.children[key].Words(currentWord+string(key))...)
 		}
 	}
 	return words
@@ -24,9 +37,14 @@ func (tn TrieNode) Words(currentWord string) []string {
 func (tn TrieNode) toString(prefix string) string {
 	var text string = ""
 	var nprefix string
+	keys := make([]rune, 0)
+	for k, _ := range tn.children {
+		keys = append(keys, k)
+	}
+	sort.Sort(RuneSlice(keys))
 
 	idx := 0
-	for key, child := range tn.children {
+	for _, key := range keys {
 
 		if idx < len(tn.children)-1 {
 			text += prefix + " ├─ " + string(key) + "\n"
@@ -35,7 +53,7 @@ func (tn TrieNode) toString(prefix string) string {
 			text += prefix + " └─ " + string(key) + "\n"
 			nprefix = prefix + "   "
 		}
-		text += child.toString(nprefix)
+		text += tn.children[key].toString(nprefix)
 		idx++
 	}
 	return text

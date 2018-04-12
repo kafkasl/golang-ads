@@ -63,13 +63,13 @@ func TestPrint(t *testing.T) {
 	output := `Trie:
  └─ m
     ├─ a
-    │  ├─ r
-    │  │  └─ s
-    │  └─ l
-    │     └─ l
-    │        └─ e
-    │           └─ u
-    │              └─ s
+    │  ├─ l
+    │  │  └─ l
+    │  │     └─ e
+    │  │        └─ u
+    │  │           └─ s
+    │  └─ r
+    │     └─ s
     └─ e
 `
 	trie := NewTrie()
