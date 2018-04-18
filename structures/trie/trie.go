@@ -1,6 +1,7 @@
 package structures
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -59,7 +60,11 @@ func (tn TrieNode) toString(prefix string) string {
 	return text
 }
 func (tn TrieNode) String() string {
-	return tn.toString("")
+	text := ""
+	for k, _ := range tn.children {
+		text += string(k)
+	}
+	return fmt.Sprintf("Children: %v. EOW: %v", text, tn.endOfWord)
 }
 
 type Trie struct {
@@ -72,7 +77,7 @@ func NewTrie() Trie {
 }
 
 func (t Trie) String() string {
-	return "Trie:\n" + t.root.String()
+	return "Trie:\n" + t.root.toString("")
 }
 
 func (t Trie) Words() []string {
