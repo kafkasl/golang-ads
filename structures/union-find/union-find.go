@@ -2,10 +2,10 @@ package structures
 
 import "fmt"
 
-type UnionFind interface {
-	Find() UnionFind
-	Union(other UnionFind) UnionFind
-}
+// type UnionFind interface {
+// 	Find() UnionFind
+// 	Union(other UnionFind) UnionFind
+// }
 
 type UnionFindSet struct {
 	parent *UnionFindSet
@@ -33,15 +33,15 @@ func (uf *UnionFindSet) Union(other *UnionFindSet) *UnionFindSet {
 	if ufParent == otherParent {
 		return ufParent
 	}
-	if ufParent.rank > otherParent.rank {
-		otherParent.parent = ufParent
-		return ufParent
-	} else {
+	if otherParent.rank > ufParent.rank {
 		ufParent.parent = otherParent
-		if ufParent.rank == otherParent.rank {
-			otherParent.rank++
-		}
 		return otherParent
+	} else {
+		otherParent.parent = ufParent
+		if otherParent.rank == ufParent.rank {
+			ufParent.rank++
+		}
+		return ufParent
 	}
 
 }
