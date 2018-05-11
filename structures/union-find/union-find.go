@@ -1,6 +1,9 @@
 package structures
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 // type UnionFind interface {
 // 	Find() UnionFind
@@ -8,50 +11,42 @@ import "fmt"
 // }
 
 type UnionFindSet struct {
-	parent *UnionFindSet
-	rank   int
-	value  int
+	g []int
 }
 
-func NewUnionFindSet(value int) *UnionFindSet {
-	uf := UnionFindSet{nil, 0, value}
-	uf.parent = &uf
+func NewUnionFindSet(n int) *UnionFindSet {
+	g := make([]int, n)
+	for i := 0; i < n; i++ {
+		g[i] = i
+	}
+	uf := UnionFindSet{g}
+
 	return &uf
 }
 
-func (uf *UnionFindSet) Find() *UnionFindSet {
-	if uf.parent == uf {
-		return uf
+func (uf *UnionFindSet) Find(x int) int {
+	if uf.g[x] == x {
+		return x
 	}
-	return uf.parent.Find()
+	uf.g[x] = uf.Find(uf.g[x])
+	return uf.g[x]
 
 }
 
-func (uf *UnionFindSet) Union(other *UnionFindSet) *UnionFindSet {
-	ufParent := uf.Find()
-	otherParent := other.Find()
-	if ufParent == otherParent {
-		return ufParent
-	}
-	if otherParent.rank > ufParent.rank {
-		ufParent.parent = otherParent
-		return otherParent
-	} else {
-		otherParent.parent = ufParent
-		if otherParent.rank == ufParent.rank {
-			ufParent.rank++
-		}
-		return ufParent
-	}
-
+func (uf *UnionFindSet) Union(x, y int) int {
+	ufParent := uf.Find(x)
+	otherParent := uf.Find(y)
+	uf.g[ufParent] = otherParent
+	return ufParent
 }
 
 func (uf *UnionFindSet) String() string {
-	if uf.parent == uf {
-		return fmt.Sprintf("[%v]: %v", uf.rank, uf.value)
+	var buffer bytes.Buffer
+	for i := 0; i < len(uf.g); i++ {
+		buffer.WriteString(fmt.Sprintf("%v ", uf.g[i]))
 	}
-	str := fmt.Sprintf("[%v]: %v -> %v", uf.rank, uf.value, uf.parent)
-	return str
+
+	return buffer.String()
 }
 
 //

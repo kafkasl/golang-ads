@@ -78,14 +78,14 @@ func adjMatrixToPriorityQ(adjMatrix [][]int) []EdgeWeight {
 }
 
 func kruskal(n int, vws []EdgeWeight) (mst []EdgeWeight) {
-	set := initUnionSets(n)
+	set := NewUnionFindSet(n)
 
 	for i := 0; i < len(vws); i++ {
 		vw := vws[i]
 		u, v, _ := vw.origin, vw.destiny, vw.weight
-		if set[u].Find() != set[v].Find() {
+		if set.Find(u) != set.Find(v) {
 			mst = append(mst, vws[i])
-			set[u].Union(set[v])
+			set.Union(u, v)
 		}
 	}
 	return
@@ -126,14 +126,14 @@ func parseInputCC(input string) (n, m int, edges []EdgeWeight) {
 	return
 }
 
-func findConnectedComponents(sets []*UnionFindSet, edges []EdgeWeight) (result []int) {
-	cc := len(sets)
+func findConnectedComponents(sets *UnionFindSet, edges []EdgeWeight) (result []int) {
+	cc := len(sets.g)
 	for i := 0; i < len(edges); i++ {
 		u, v := edges[i].origin, edges[i].destiny
-		if sets[u].Find() != sets[v].Find() {
+		if sets.Find(u) != sets.Find(v) {
 			cc--
 		}
-		sets[u].Union(sets[v])
+		sets.Union(u, v)
 		result = append(result, cc)
 
 	}
@@ -145,7 +145,7 @@ func ExampleComponentsConnexes1() {
 
 	n, _, edges := parseInputCC(input)
 
-	sets := initUnionSets(n)
+	sets := NewUnionFindSet(n)
 
 	result := findConnectedComponents(sets, edges)
 
@@ -162,7 +162,7 @@ func ExampleComponentsConnexes2() {
 
 	n, _, edges := parseInputCC(input)
 
-	sets := initUnionSets(n)
+	sets := NewUnionFindSet(n)
 
 	result := findConnectedComponents(sets, edges)
 	for i, r := range result {
