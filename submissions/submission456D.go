@@ -1,10 +1,10 @@
 package main
 
 import (
-    "os"
-	"fmt"
-	"sort"
 	"bufio"
+	"fmt"
+	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -114,7 +114,6 @@ func (t Trie) Search(key string) bool {
 	return currentNode.endOfWord
 }
 
-
 func canWinLose(node *TrieNode) (cw bool, cl bool) {
 	if len(node.children) == 0 {
 		return false, true
@@ -159,7 +158,6 @@ func parseInput() (n, k int, trie Trie) {
 }
 
 func main() {
-
-    n, k, trie := parseInput()
-    fmt.Println(solveGame(n, k, trie))
+	n, k, trie := parseInput()
+	fmt.Println(solveGame(n, k, trie))
 }

@@ -8,45 +8,15 @@ import (
 	"strings"
 )
 
-// func canWinLose(node *TrieNode) (cw bool, cl bool) {
-// 	if len(node.children) == 0 {
-// 		return false, true
-// 	}
-// 	cw, cl = false, false
-// 	for _, child := range node.children {
-// 		cw_aux, cl_aux := canWinLose(child)
-// 		cw = cw || !cw_aux
-// 		cl = cl || !cl_aux
-// 	}
-// 	return cw, cl
-// }
-//
-// func solveGame(n, k int, trie Trie) string {
-//
-// 	rootCanWin, rootCanLose := canWinLose(trie.root)
-//
-// 	if rootCanWin && rootCanLose {
-// 		return "First"
-// 	} else if rootCanWin {
-// 		if (k % 2) == 1 {
-// 			return "First"
-// 		} else {
-// 			return "Second"
-// 		}
-// 	} else {
-// 		return "Second"
-// 	}
-// }
-//
-// Auxuliar structure to hold vertices and their weights
-type VertexWeight struct {
+// Auxuliar structure to hold edges and their weights
+type EdgeWeight struct {
 	origin  int
 	destiny int
 	weight  int
 }
 
-// Implementing sort interface to sort VertexWeight instances
-type byWeight []VertexWeight
+// Implementing sort interface to sort EdgeWeight instances
+type byWeight []EdgeWeight
 
 func (s byWeight) Len() int {
 	return len(s)
@@ -56,6 +26,14 @@ func (s byWeight) Swap(i, j int) {
 }
 func (s byWeight) Less(i, j int) bool {
 	return s[i].weight < s[j].weight
+}
+
+func initUnionSets(n int) (set []*UnionFindSet) {
+	set = make([]*UnionFindSet, n)
+	for i := 0; i < n; i++ {
+		set[i] = NewUnionFindSet(i)
+	}
+	return
 }
 
 // Parsing input. Read number of nodes n. After, each line contains: 'origin destiny weight' of each vertex.
@@ -80,15 +58,15 @@ func parseInput(input string) (adjMatrix [][]int) {
 	return
 }
 
-func adjMatrixToPriorityQ(adjMatrix [][]int) []VertexWeight {
-	var vws []VertexWeight
+func adjMatrixToPriorityQ(adjMatrix [][]int) []EdgeWeight {
+	var vws []EdgeWeight
 	for i := 0; i < len(adjMatrix); i++ {
 		if adjMatrix[i][i] != 0 {
 			fmt.Printf("Vertices can only connect 2 different nodes, ignoring vertex(%v, %v)", i, i)
 		}
 		for j := i + 1; j < len(adjMatrix[i]); j++ {
 			if adjMatrix[i][j] > 0 {
-				aux := VertexWeight{i, j, adjMatrix[i][j]}
+				aux := EdgeWeight{i, j, adjMatrix[i][j]}
 				vws = append(vws, aux)
 
 			}
@@ -99,11 +77,9 @@ func adjMatrixToPriorityQ(adjMatrix [][]int) []VertexWeight {
 	return vws
 }
 
-func kruskal(n int, vws []VertexWeight) (mst []VertexWeight) {
-	set := make([]*UnionFindSet, n)
-	for i := 0; i < n; i++ {
-		set[i] = NewUnionFindSet(i)
-	}
+func kruskal(n int, vws []EdgeWeight) (mst []EdgeWeight) {
+	set := initUnionSets(n)
+
 	for i := 0; i < len(vws); i++ {
 		vw := vws[i]
 		u, v, _ := vw.origin, vw.destiny, vw.weight
@@ -132,21 +108,68 @@ func ExampleKruskal1() {
 
 }
 
-//
-// func ExampleGame2() {
-// 	input := "3 1\na\nb\nc"
-//
-// 	n, k, trie := parseInput(input)
-//
-// 	fmt.Printf("%v", solveGame(n, k, trie))
-// 	// Output: First
-// }
-//
-// func ExampleGame3() {
-// 	input := "1 2\nab"
-//
-// 	n, k, trie := parseInput(input)
-//
-// 	fmt.Printf("%v", solveGame(n, k, trie))
-// 	// Output: Second
-// }
+func parseInputCC(input string) (n, m int, edges []EdgeWeight) {
+	scanner := bufio.NewScanner(strings.NewReader(input))
+	scanner.Scan()
+	vals := strings.Split(scanner.Text(), " ")
+	n, _ = strconv.Atoi(vals[0])
+	m, _ = strconv.Atoi(vals[1])
+
+	for i := 0; i < m; i++ {
+		scanner.Scan()
+		vals := strings.Split(scanner.Text(), " ")
+		origin, _ := strconv.Atoi(vals[0])
+		destiny, _ := strconv.Atoi(vals[1])
+		edges = append(edges, EdgeWeight{origin, destiny, 1})
+
+	}
+	return
+}
+
+func findConnectedComponents(sets []*UnionFindSet, edges []EdgeWeight) (result []int) {
+	cc := len(sets)
+	for i := 0; i < len(edges); i++ {
+		u, v := edges[i].origin, edges[i].destiny
+		if sets[u].Find() != sets[v].Find() {
+			cc--
+		}
+		sets[u].Union(sets[v])
+		result = append(result, cc)
+
+	}
+	return
+}
+
+func ExampleComponentsConnexes1() {
+	input := "4 5\n0 1\n0 2\n1 2\n3 2\n3 1\n"
+
+	n, _, edges := parseInputCC(input)
+
+	sets := initUnionSets(n)
+
+	result := findConnectedComponents(sets, edges)
+
+	for i, r := range result {
+		if i > 0 {
+			fmt.Printf(" ")
+		}
+		fmt.Printf("%v", r)
+	}
+	// Output: 3 2 2 1 1
+}
+func ExampleComponentsConnexes2() {
+	input := "100000 4\n17 751\n17 1024\n0 99999\n1024 751\n"
+
+	n, _, edges := parseInputCC(input)
+
+	sets := initUnionSets(n)
+
+	result := findConnectedComponents(sets, edges)
+	for i, r := range result {
+		if i > 0 {
+			fmt.Printf(" ")
+		}
+		fmt.Printf("%v", r)
+	}
+	// Output: 99999 99998 99997 99997
+}
