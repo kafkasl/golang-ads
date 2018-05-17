@@ -2,7 +2,6 @@ package structures
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/disiqueira/gotree"
 )
@@ -21,7 +20,14 @@ type PatriciaTrieNode struct {
 }
 
 func (ptn *PatriciaTrieNode) String() string {
-	return fmt.Sprintf("[%v, %v] -> (%p, %p)", strconv.FormatInt(int64(ptn.key), 2), ptn.bit_index, ptn.left, ptn.right)
+	l, r := "_", "_"
+	if ptn.left != nil {
+		l = fmt.Sprintf("%b", ptn.left.key)
+	}
+	if ptn.right != nil {
+		r = fmt.Sprintf("%b", ptn.right.key)
+	}
+	return fmt.Sprintf("[%b, %v] -> (%v, %v)", ptn.key, ptn.bit_index, l, r)
 }
 
 // func (ptn PatriciaTrieNode) Search(key uint64) bool {
@@ -31,7 +37,7 @@ func (ptn *PatriciaTrieNode) String() string {
 // }
 
 func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
-	fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v [%v]\n", ptn, prev_bi, ptn.bit_index, uint(prev_bi))
+	// fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v [%v]\n", ptn, prev_bi, ptn.bit_index, uint(prev_bi))
 
 	if prev_bi >= ptn.bit_index {
 		return key == ptn.key
@@ -44,7 +50,7 @@ func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
 }
 
 func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
-	fmt.Printf("prev_bi %v, bit_index %v [%v]\n", prev_bi, ptn.bit_index, uint(prev_bi))
+	// fmt.Printf("prev_bi %v, bit_index %v [%v]\n", prev_bi, ptn.bit_index, uint(prev_bi))
 	if prev_bi >= ptn.bit_index {
 		return ptn
 	}
@@ -56,6 +62,7 @@ func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
 }
 
 func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieNode) bool {
+	// fmt.Printf("\n\n\nParent Node: %v\nEnd Node: %v\nNode: %v\n\n\n", parentNode, endNode, node)
 	// if ptn.bit_index <= parentNode.bit_index {
 	// 	return false
 	// }
@@ -65,9 +72,12 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 	} else {
 		nextNode = ptn.right
 	}
-	if nextNode.bit_index < node.bit_index && ptn.bit_index != parentNode.bit_index {
+	// if nextNode.bit_index < node.bit_index && ptn != endNode {
+	if nextNode.bit_index < node.bit_index && parentNode != endNode {
+
 		return nextNode.insertNode(node, endNode, ptn)
 	} else {
+		fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
 		if parentNode.right == ptn {
 			parentNode.right = node
 		} else if parentNode.left == ptn {
@@ -80,12 +90,12 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 
 		if node.key&((1<<63)>>node.bit_index) == 0 {
 			node.left = node
-			node.right = nextNode
+			node.right = ptn
 		} else {
 			node.right = node
-			node.left = nextNode
+			node.left = ptn
 		}
-		fmt.Printf("Parent Node: %v\nNew Node: %v\n", parentNode, node)
+		// fmt.Printf("Parent Node: %v\nNew Node: %v\n", parentNode, node)
 		return true
 	}
 }
