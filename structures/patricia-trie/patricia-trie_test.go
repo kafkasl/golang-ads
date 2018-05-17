@@ -150,34 +150,39 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	}
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
-	pt.Print()
-	pt.Insert(inputs[4])
 
+	pt.Print()
+
+	pt.Insert(inputs[4])
+	pt.Print()
+	pt.Insert(inputs[5])
+	pt.Print()
 	fmt.Printf("\n\n\n\n")
 
 }
 
-// func TestSearchHandbook(t *testing.T) {
-// 	inputs := []uint64{5, 0, 2, 8, 4, 10}
-// 	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
-// 	// outputs := []bool{false, false, true, false, true, true}
-//
-// 	// var pt PatriciaTrie
-// 	pt := NewPatriciaTrie()
-// 	for _, num := range inputs {
-// 		pt.Insert(num)
-// 	}
-//
-// 	fmt.Printf("Patricia Trie:\n%v\n", pt)
-// 	pt.Print()
-//
-// 	for _, num := range inputs {
-// 		if !pt.Search(num) {
-// 			t.Fatalf("Num not found %v and has been inserted", num)
-// 		}
-// 	}
-// 	fmt.Printf("\n\n\n\n")
-// }
+func TestSearchHandbook(t *testing.T) {
+	inputs := []uint64{5, 0, 2, 8, 4, 10}
+	no_inputs := []uint64{1, 3, 6, 7, 9}
+	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
+	// outputs := []bool{false, false, true, false, true, true}
+
+	// var pt PatriciaTrie
+	pt := NewPatriciaTrie()
+	for _, num := range inputs {
+		pt.Insert(num)
+	}
+
+	fmt.Printf("Patricia Trie:\n%v\n", pt)
+	pt.Print()
+
+	for _, num := range no_inputs {
+		if pt.Search(num) {
+			t.Fatalf("Num %v found and has not been inserted", num)
+		}
+	}
+	fmt.Printf("\n\n\n\n")
+}
 
 //
 // func TestPrint(t *testing.T) {

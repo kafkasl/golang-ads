@@ -62,7 +62,7 @@ func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
 }
 
 func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieNode) bool {
-	// fmt.Printf("\n\n\nParent Node: %v\nEnd Node: %v\nNode: %v\n\n\n", parentNode, endNode, node)
+	fmt.Printf("\n\n\nSTART\nParent Node: %v\nEnd Node: %v\nNode: %v\nCurrent Node: %v", parentNode, endNode, node, ptn)
 	// if ptn.bit_index <= parentNode.bit_index {
 	// 	return false
 	// }
@@ -73,10 +73,13 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 		nextNode = ptn.right
 	}
 	// if nextNode.bit_index < node.bit_index && ptn != endNode {
-	if nextNode.bit_index < node.bit_index && parentNode != endNode {
-
+	if nextNode.bit_index < node.bit_index && parentNode.bit_index < ptn.bit_index {
 		return nextNode.insertNode(node, endNode, ptn)
 	} else {
+		// if node.bit_index > ptn.bit_index {
+		// 	parentNode = ptn
+		// 	ptn = nextNode
+		// }
 		fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
 		if parentNode.right == ptn {
 			parentNode.right = node
