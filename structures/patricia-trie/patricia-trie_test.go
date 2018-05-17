@@ -96,12 +96,12 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	if pt.header.left.bit_index != 61 {
 		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
 	}
-	// if pt.header.left.left.right.key != inputs[2] {
-	// 	t.Fatalf("Expected %v in header.left.left.right, found %v", inputs[2], pt.header.left.left.right.key)
-	// }
-	// if pt.header.left.left.left.key != inputs[1] {
-	// 	t.Fatalf("Expected %v in header.left.left.left, found %v", inputs[1], pt.header.left.left.left.key)
-	// }
+	if pt.header.left.left.right.key != inputs[2] {
+		t.Fatalf("Expected %v in header.left.left.right, found %v", inputs[2], pt.header.left.left.right.key)
+	}
+	if pt.header.left.left.left.key != inputs[1] {
+		t.Fatalf("Expected %v in header.left.left.left, found %v", inputs[1], pt.header.left.left.left.key)
+	}
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
 	pt.Print()
