@@ -9,95 +9,142 @@ func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
 	t.Fatalf("Expected: \n%v, but got: \n%v\n", expected, got)
 }
 
-func contains(list []string, target string) bool {
-	for _, element := range list {
-		if target == element {
-			return true
-		}
-	}
-	return false
-}
-
+// func TestSearch(t *testing.T) {
+// 	inputs := []uint64{0, 1, 2, 3, 4}
+// 	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
+// 	// outputs := []bool{false, false, true, false, true, true}
 //
-// func TestWords(t *testing.T) {
-// 	words := []string{"mars", "malleus", "me", "stavro", "dent", "wiggin"}
+// 	// var pt PatriciaTrie
+// 	pt := NewPatriciaTrie()
 //
-// 	trie := NewTrie()
-// 	for _, word := range words {
-// 		trie.Insert(word)
+// 	pt.Insert(inputs[0])
+// 	if !pt.Search(inputs[0]) {
+// 		t.Fatalf("Not found element after 1 insertion")
+// 	}
+// 	pt.Insert(inputs[1])
+// 	if !pt.Search(inputs[1]) {
+// 		t.Fatalf("Not found element after 1 insertion")
 // 	}
 //
-// 	resultWords := trie.Words()
-//
-// 	if len(resultWords) != len(words) {
-// 		t.Fatalf("Expected: \n%v, but got: \n%v\n", words, resultWords)
-// 	}
-// 	for i := 0; i < len(words); i++ {
-// 		if !contains(words, resultWords[i]) {
-// 			t.Fatalf("Word: %v not reported to be in %v\n", resultWords[i], words)
-// 		}
+// 	if pt.Search(inputs[2]) {
+// 		t.Fatalf("Found element after 1 insertion")
 // 	}
 //
+// 	pt.Insert(inputs[2])
+// 	fmt.Printf("Header %v\nFirst child %v\nLeft %v\nRight %v\n", pt.header, pt.header.left, pt.header.left.left, pt.header.left.right)
+// 	if pt.header.left.key != 2 {
+// 		t.Fatalf("Not found element 2 where expected, found %v", pt.header.left.key)
+// 	}
+// 	if pt.header.left.right.key != 1 {
+// 		t.Fatalf("Not found element 1 where expected, found %v", pt.header.left.right.key)
+// 	}
+// 	fmt.Printf("\n\n\n\n")
 // }
 
-func TestSearch(t *testing.T) {
-	inputs := []uint64{0, 1, 2, 3, 4}
+func TestSearchHandbookStepByStep(t *testing.T) {
+	inputs := []uint64{5, 0, 2, 8, 4, 10}
 	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
 	// outputs := []bool{false, false, true, false, true, true}
 
 	// var pt PatriciaTrie
 	pt := NewPatriciaTrie()
 
+	// INSERT 5
 	pt.Insert(inputs[0])
-	if !pt.Search(inputs[0]) {
-		t.Fatalf("Not found element after 1 insertion")
+	if pt.header.key != inputs[0] {
+		t.Fatalf("Expected %v in header, found %v", inputs[0], pt.header.key)
 	}
-	// pt.Insert(inputs[1])
-	// pt.Insert(inputs[2])
 
-	for _, num := range inputs {
-		pt.Insert(num)
-		fmt.Println(num)
+	// INSERT 0
+	pt.Insert(inputs[1])
+	if pt.header.key != inputs[0] {
+		t.Fatalf("Expected %v in header, found %v", inputs[0], pt.header.key)
 	}
-	for _, num := range inputs {
-		fmt.Println(pt.Search(num))
+	if pt.header.left.key != inputs[1] {
+		t.Fatalf("Expected %v in header.left, found %v", inputs[1], pt.header.left.key)
 	}
+	if pt.header.left.left.key != inputs[1] {
+		t.Fatalf("Expected %v in header.left.left, found %v", inputs[1], pt.header.left.left.key)
+	}
+	if pt.header.left.right.key != inputs[0] {
+		t.Fatalf("Expected %v in header.left.right.key, found %v", inputs[0], pt.header.left.right.key)
+	}
+	if pt.header.bit_index != 0 {
+		t.Fatalf("Expected %v bit_index in header, found %v", 0, pt.header.bit_index)
+	}
+	if pt.header.left.bit_index != 61 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
+	}
+
+	// INSERT 2
+	pt.Insert(inputs[2])
+	if pt.header.key != inputs[0] {
+		t.Fatalf("Expected %v in header, found %v", inputs[0], pt.header.key)
+	}
+	if pt.header.left.key != inputs[1] {
+		t.Fatalf("Expected %v in header.left, found %v", inputs[1], pt.header.left.key)
+	}
+	if pt.header.left.left.key != inputs[2] {
+		t.Fatalf("Expected %v in header.left.left, found %v", inputs[2], pt.header.left.left.key)
+	}
+	if pt.header.left.right.key != inputs[0] {
+		t.Fatalf("Expected %v in header.left.right.key, found %v", inputs[0], pt.header.left.right.key)
+	}
+	if pt.header.bit_index != 0 {
+		t.Fatalf("Expected %v bit_index in header, found %v", 0, pt.header.bit_index)
+	}
+	if pt.header.left.bit_index != 61 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
+	}
+	// if pt.header.left.left.right.key != inputs[2] {
+	// 	t.Fatalf("Expected %v in header.left.left.right, found %v", inputs[2], pt.header.left.left.right.key)
+	// }
+	// if pt.header.left.left.left.key != inputs[1] {
+	// 	t.Fatalf("Expected %v in header.left.left.left, found %v", inputs[1], pt.header.left.left.left.key)
+	// }
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
 	pt.Print()
+	fmt.Printf("\n\n\n\n")
 
-	// var found bool
-	// for i, word := range searches {
-	// 	found = trie.Search(word)
-	// 	if found != outputs[i] {
-	// 		t.Fatalf("Expected: %v, but got: %v, for word %v\n", found, outputs[i], word)
-	// 	}
-	// }
 }
 
+// func TestSearchHandbook(t *testing.T) {
+// 	inputs := []uint64{5, 0, 2, 8, 4, 10}
+// 	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
+// 	// outputs := []bool{false, false, true, false, true, true}
+//
+// 	// var pt PatriciaTrie
+// 	pt := NewPatriciaTrie()
+// 	for _, num := range inputs {
+// 		pt.Insert(num)
+// 	}
+//
+// 	fmt.Printf("Patricia Trie:\n%v\n", pt)
+// 	pt.Print()
+//
+// 	for _, num := range inputs {
+// 		if !pt.Search(num) {
+// 			t.Fatalf("Num not found %v and has been inserted", num)
+// 		}
+// 	}
+// 	fmt.Printf("\n\n\n\n")
+// }
 //
 // func TestPrint(t *testing.T) {
-// 	inputs := []string{"mars", "malleus", "me"}
-// 	output := `Trie:
-//  └─ m
-//     ├─ a
-//     │  ├─ l
-//     │  │  └─ l
-//     │  │     └─ e
-//     │  │        └─ u
-//     │  │           └─ s
-//     │  └─ r
-//     │     └─ s
-//     └─ e
-// `
-// 	trie := NewTrie()
-// 	for _, word := range inputs {
-// 		trie.Insert(word)
-// 	}
+// 	inputs := []uint64{0, 1, 2, 3, 4}
 //
-// 	resultOutput := trie.String()
+// 	pt := NewPatriciaTrie()
 //
-// 	if resultOutput != output {
-// 		t.Fatalf("Expected output: \n%v\n but got: \n%v\n", output, resultOutput)
-// 	}
+// 	pt.Insert(inputs[0])
+// 	pt.Insert(inputs[1])
+// 	pt.Insert(inputs[2])
+// 	pt.Insert(inputs[3])
+// 	// pt.Insert(inputs[4])
+//
+// 	fmt.Printf("Patricia Trie:\n%v\n", pt)
+// 	pt.Print()
+//
+// 	fmt.Printf("Header %v\n", pt.header)
+// 	fmt.Printf("Node: %v\n", pt.header.left)
 // }
