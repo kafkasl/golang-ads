@@ -103,6 +103,8 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 		t.Fatalf("Expected %v in header.left.left.left, found %v", inputs[1], pt.header.left.left.left.key)
 	}
 
+	pt.Insert(inputs[3])
+
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
 	pt.Print()
 	fmt.Printf("\n\n\n\n")
