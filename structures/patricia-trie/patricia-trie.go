@@ -6,12 +6,6 @@ import (
 	"github.com/disiqueira/gotree"
 )
 
-// type RuneSlice []rune
-//
-// func (p RuneSlice) Len() int           { return len(p) }
-// func (p RuneSlice) Less(i, j int) bool { return p[i] < p[j] }
-// func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-
 type PatriciaTrieNode struct {
 	key       uint64
 	bit_index uint
@@ -30,14 +24,8 @@ func (ptn *PatriciaTrieNode) String() string {
 	return fmt.Sprintf("[%b, %v] -> (%v, %v)", ptn.key, ptn.bit_index, l, r)
 }
 
-// func (ptn PatriciaTrieNode) Search(key uint64) bool {
-// 	if key&(1<<ptn.bit_index) == 0 {
-// 	}
-// 	return ptn.search(key, -1)
-// }
-
 func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
-	// fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v [%v]\n", ptn, prev_bi, ptn.bit_index, uint(prev_bi))
+	fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v\n", ptn, prev_bi, ptn.bit_index)
 
 	if prev_bi >= ptn.bit_index {
 		return key == ptn.key
@@ -123,12 +111,17 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 //
 // }
 
-func (ptn *PatriciaTrieNode) depth(accDepth int32) int {
-	var rd, ld int
-	if ptn.right != nil {
+func (ptn *PatriciaTrieNode) depth(accDepth int) int {
+	fmt.Printf("right %v\nleft %v\nptn: %v\n", ptn.right, ptn.left, ptn)
+	if !((ptn.right != nil && ptn.right.bit_index > ptn.bit_index) ||
+		(ptn.left != nil && ptn.left.bit_index > ptn.bit_index)) {
+		return accDepth
+	}
+	rd, ld := 0, 0
+	if ptn.right != nil && ptn.right.bit_index > ptn.bit_index {
 		rd = ptn.right.depth(accDepth + 1)
 	}
-	if ptn.left != nil {
+	if ptn.left != nil && ptn.left.bit_index > ptn.bit_index {
 		ld = ptn.left.depth(accDepth + 1)
 	}
 	if rd > ld {
@@ -205,8 +198,7 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 		fmt.Println("Only header present inserting left child")
 		lBitPos := firstDiffBit(key, pt.header.key)
 		node := &PatriciaTrieNode{key, lBitPos, nil, nil}
-		// fmt.Printf("lbit %v, ")
-		if key&((1<<63)>>lBitPos) == 0 {
+		if node.key&((1<<63)>>node.bit_index) == 0 {
 			node.left = node
 			node.right = pt.header
 		} else {
@@ -214,6 +206,7 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 			node.left = pt.header
 		}
 		pt.header.left = node
+
 	} else if !pt.Search(key) {
 		// HEADER AND +1 NODES
 
@@ -237,11 +230,11 @@ func (pt *PatriciaTrie) Depth() int {
 	if pt.header == nil {
 		return 0
 	}
-	return pt.header.depth(0)
+	return pt.header.depth(1)
 }
 
 func (ptn *PatriciaTrieNode) populateTree(parent *gotree.Tree, dir string) {
-	txt := fmt.Sprintf("%v %b[%v,%v]", dir, ptn.key, 63-ptn.bit_index, ptn.bit_index)
+	txt := fmt.Sprintf("%v %b[%v]", dir, ptn.key, ptn.bit_index)
 	if ptn.left != nil || ptn.right != nil {
 		l := "_"
 		r := "_"

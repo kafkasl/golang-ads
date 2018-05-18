@@ -9,37 +9,6 @@ func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
 	t.Fatalf("Expected: \n%v, but got: \n%v\n", expected, got)
 }
 
-// func TestSearch(t *testing.T) {
-// 	inputs := []uint64{0, 1, 2, 3, 4}
-// 	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
-// 	// outputs := []bool{false, false, true, false, true, true}
-//
-// 	// var pt PatriciaTrie
-// 	pt := NewPatriciaTrie()
-//
-// 	pt.Insert(inputs[0])
-// 	if !pt.Search(inputs[0]) {
-// 		t.Fatalf("Not found element after 1 insertion")
-// 	}
-// 	pt.Insert(inputs[1])
-// 	if !pt.Search(inputs[1]) {
-// 		t.Fatalf("Not found element after 1 insertion")
-// 	}
-//
-// 	if pt.Search(inputs[2]) {
-// 		t.Fatalf("Found element after 1 insertion")
-// 	}
-//
-// 	pt.Insert(inputs[2])
-// 	fmt.Printf("Header %v\nFirst child %v\nLeft %v\nRight %v\n", pt.header, pt.header.left, pt.header.left.left, pt.header.left.right)
-// 	if pt.header.left.key != 2 {
-// 		t.Fatalf("Not found element 2 where expected, found %v", pt.header.left.key)
-// 	}
-// 	if pt.header.left.right.key != 1 {
-// 		t.Fatalf("Not found element 1 where expected, found %v", pt.header.left.right.key)
-// 	}
-// 	fmt.Printf("\n\n\n\n")
-// }
 func TestEmpty(t *testing.T) {
 	pt := NewPatriciaTrie()
 	var i uint64
@@ -73,17 +42,42 @@ func TestHeaderOnly(t *testing.T) {
 	if pt.header.bit_index != 0 {
 		t.Fatalf("Header bit index should be 0")
 	}
+	if pt.header.left != pt.header {
+		t.Fatalf("Header left should point to itself but it is %v instead of %v", pt.header.left, pt.header)
+	}
+	if pt.header.right != nil {
+		t.Fatalf("Header right should be nil but it is %v", pt.header.right)
+	}
+}
+
+func TestRepeatedInsert(t *testing.T) {
+	pt := NewPatriciaTrie()
+	var i uint64
+	for i = 1; i < 10; i++ {
+		pt.Insert(0)
+	}
+
+	if !pt.Search(0) {
+		t.Fatalf("Found %v and has not been inserted", i)
+	}
+
 	if pt.header.key != 0 {
 		t.Fatalf("Header key should be 0")
+	}
+	if pt.header.bit_index != 0 {
+		t.Fatalf("Header bit index should be 0")
+	}
+	if pt.header.left != pt.header {
+		t.Fatalf("Header left should point to itself but it is %v instead of %v", pt.header.left, pt.header)
+	}
+	if pt.header.right != nil {
+		t.Fatalf("Header right should be nil but it is %v", pt.header.right)
 	}
 }
 
 func TestSearchHandbookStepByStep(t *testing.T) {
 	inputs := []uint64{5, 0, 2, 8, 4, 10}
-	// searches := []string{"marx", "ordo", "mass", "hello", "malleus", "me"}
-	// outputs := []bool{false, false, true, false, true, true}
 
-	// var pt PatriciaTrie
 	pt := NewPatriciaTrie()
 
 	// INSERT 5
@@ -198,6 +192,58 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 
 }
 
+func TestDepth(t *testing.T) {
+	inputs := []uint64{1, 3, 7, 15}
+	pt := NewPatriciaTrie()
+	if pt.Depth() != 0 {
+		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
+	}
+
+	for eDepth, i := range inputs {
+		pt.Insert(i)
+		pt.Print()
+		d := pt.Depth()
+		if d != eDepth+1 {
+			t.Fatalf("Depth is wrong, expected value: %v, found: %v", eDepth+1, d)
+		}
+	}
+}
+
+func TestDepthReverse(t *testing.T) {
+	inputs := []uint64{15, 7, 3, 1}
+	pt := NewPatriciaTrie()
+	if pt.Depth() != 0 {
+		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
+	}
+
+	for eDepth, i := range inputs {
+		pt.Insert(i)
+		pt.Print()
+		d := pt.Depth()
+		if d != eDepth+1 {
+			t.Fatalf("Depth is wrong, expected value: %v, found: %v", eDepth+1, d)
+		}
+	}
+}
+
+func TestRightInsert(t *testing.T) {
+	inputs := []uint64{1, 3, 7, 15}
+	pt := NewPatriciaTrie()
+	if pt.Depth() != 0 {
+		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
+	}
+	// pt.Insert(0)
+	// t.Logf("Depth: %v", pt.Depth())
+
+	for _, num := range inputs {
+		pt.Insert(num)
+		pt.Print()
+		if !pt.Search(num) {
+			t.Fatalf("Key %v should be present", num)
+		}
+	}
+}
+
 func TestSearchHandbook(t *testing.T) {
 	inputs := []uint64{5, 0, 2, 8, 4, 10}
 	no_inputs := []uint64{1, 3, 6, 7, 9}
@@ -220,22 +266,3 @@ func TestSearchHandbook(t *testing.T) {
 	}
 	fmt.Printf("\n\n\n\n")
 }
-
-//
-// func TestPrint(t *testing.T) {
-// 	inputs := []uint64{0, 1, 2, 3, 4}
-//
-// 	pt := NewPatriciaTrie()
-//
-// 	pt.Insert(inputs[0])
-// 	pt.Insert(inputs[1])
-// 	pt.Insert(inputs[2])
-// 	pt.Insert(inputs[3])
-// 	// pt.Insert(inputs[4])
-//
-// 	fmt.Printf("Patricia Trie:\n%v\n", pt)
-// 	pt.Print()
-//
-// 	fmt.Printf("Header %v\n", pt.header)
-// 	fmt.Printf("Node: %v\n", pt.header.left)
-// }
