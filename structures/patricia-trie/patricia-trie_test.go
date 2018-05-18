@@ -105,8 +105,8 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	if pt.header.bit_index != 0 {
 		t.Fatalf("Expected %v bit_index in header, found %v", 0, pt.header.bit_index)
 	}
-	if pt.header.left.bit_index != 61 {
-		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
+	if pt.header.left.bit_index != 62 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 62, pt.header.left.bit_index)
 	}
 
 	// INSERT 2
@@ -129,11 +129,11 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	if pt.header.bit_index != 0 {
 		t.Fatalf("Expected %v bit_index in header, found %v", 0, pt.header.bit_index)
 	}
-	if pt.header.left.bit_index != 61 {
-		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
+	if pt.header.left.bit_index != 62 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 62, pt.header.left.bit_index)
 	}
-	if pt.header.left.left.bit_index != 62 {
-		t.Fatalf("Expected %v bit_index in header.left.left, found %v", 62, pt.header.left.left.bit_index)
+	if pt.header.left.left.bit_index != 63 {
+		t.Fatalf("Expected %v bit_index in header.left.left, found %v", 63, pt.header.left.left.bit_index)
 	}
 	if pt.header.left.left.right.key != inputs[2] {
 		t.Fatalf("Expected %v in header.left.left.right, found %v", inputs[2], pt.header.left.left.right.key)
@@ -172,14 +172,14 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	if pt.header.bit_index != 0 {
 		t.Fatalf("Expected %v bit_index in header, found %v", 0, pt.header.bit_index)
 	}
-	if pt.header.left.bit_index != 60 {
+	if pt.header.left.bit_index != 61 {
 		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.bit_index)
 	}
-	if pt.header.left.left.bit_index != 61 {
-		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.left.bit_index)
+	if pt.header.left.left.bit_index != 62 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 62, pt.header.left.left.bit_index)
 	}
-	if pt.header.left.left.left.bit_index != 62 {
-		t.Fatalf("Expected %v bit_index in header.left, found %v", 61, pt.header.left.left.left.bit_index)
+	if pt.header.left.left.left.bit_index != 63 {
+		t.Fatalf("Expected %v bit_index in header.left, found %v", 63, pt.header.left.left.left.bit_index)
 	}
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
@@ -316,7 +316,7 @@ func TestRandomSearch(t *testing.T) {
 	rand.Seed(666)
 	pt := NewPatriciaTrie()
 	var keys []uint64
-	for i := 0; i < 20; i++ {
+	for i := 0; i < 100; i++ {
 		key := randUint64()
 		pt.Insert(key)
 		keys = append(keys, key)
