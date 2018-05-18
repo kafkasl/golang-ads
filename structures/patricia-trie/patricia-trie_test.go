@@ -2,11 +2,13 @@ package structures
 
 import (
 	"fmt"
+	"math/bits"
+	"math/rand"
 	"testing"
 )
 
-func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
-	t.Fatalf("Expected: \n%v, but got: \n%v\n", expected, got)
+func randUint64() uint64 {
+	return uint64(rand.Uint32())<<32 + uint64(rand.Uint32())
 }
 
 func TestEmpty(t *testing.T) {
@@ -110,7 +112,7 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 	// INSERT 2
 	pt.Insert(inputs[2])
 
-	pt.Print()
+	t.Logf("%v", pt)
 
 	if pt.header.key != inputs[0] {
 		t.Fatalf("Expected %v in header, found %v", inputs[0], pt.header.key)
@@ -182,12 +184,12 @@ func TestSearchHandbookStepByStep(t *testing.T) {
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
 
-	pt.Print()
+	t.Logf("%v", pt)
 
 	pt.Insert(inputs[4])
-	pt.Print()
+	t.Logf("%v", pt)
 	pt.Insert(inputs[5])
-	pt.Print()
+	t.Logf("%v", pt)
 	fmt.Printf("\n\n\n\n")
 
 }
@@ -201,7 +203,7 @@ func TestDepth(t *testing.T) {
 
 	for eDepth, i := range inputs {
 		pt.Insert(i)
-		pt.Print()
+		t.Logf("%v", pt)
 		d := pt.Depth()
 		if d != eDepth+1 {
 			t.Fatalf("Depth is wrong, expected value: %v, found: %v", eDepth+1, d)
@@ -218,11 +220,44 @@ func TestDepthReverse(t *testing.T) {
 
 	for eDepth, i := range inputs {
 		pt.Insert(i)
-		pt.Print()
+		t.Logf("%v", pt)
 		d := pt.Depth()
 		if d != eDepth+1 {
 			t.Fatalf("Depth is wrong, expected value: %v, found: %v", eDepth+1, d)
 		}
+	}
+}
+func TestManyConfigsConstruct(t *testing.T) {
+	inputs := []uint64{5, 0, 2, 8, 4, 10, 13, 9, 56}
+	pt := NewPatriciaTrie()
+	if pt.Depth() != 0 {
+		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
+	}
+
+	for _, i := range inputs {
+		pt.Insert(i)
+		t.Logf("%v", pt)
+	}
+	for _, i := range inputs {
+		if !pt.Search(i) {
+			t.Fatalf("Key %v not found", i)
+		}
+	}
+	t.Logf("%v", pt)
+}
+
+func TestDepthRight(t *testing.T) {
+	inputs := []uint64{5, 0, 2, 8, 4, 10, 13, 9}
+	pt := NewPatriciaTrie()
+	if pt.Depth() != 0 {
+		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
+	}
+
+	for _, i := range inputs {
+		pt.Insert(i)
+	}
+	if pt.Depth() != 5 {
+		t.Fatalf("Depth should be %v, found %v", 5, pt.Depth())
 	}
 }
 
@@ -237,7 +272,7 @@ func TestRightInsert(t *testing.T) {
 
 	for _, num := range inputs {
 		pt.Insert(num)
-		pt.Print()
+		t.Logf("%v", pt)
 		if !pt.Search(num) {
 			t.Fatalf("Key %v should be present", num)
 		}
@@ -257,7 +292,7 @@ func TestSearchHandbook(t *testing.T) {
 	}
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
-	pt.Print()
+	t.Logf("%v", pt)
 
 	for _, num := range no_inputs {
 		if pt.Search(num) {
@@ -265,4 +300,71 @@ func TestSearchHandbook(t *testing.T) {
 		}
 	}
 	fmt.Printf("\n\n\n\n")
+}
+
+func TestString(t *testing.T) {
+	inputs := []uint64{5, 0, 2, 8, 4, 10, 13, 9}
+	pt := NewPatriciaTrie()
+	for _, i := range inputs {
+		pt.Insert(i)
+	}
+
+	t.Logf("Printing pt.String()\n%v", pt.String())
+}
+
+func TestRandomSearch(t *testing.T) {
+	rand.Seed(666)
+	pt := NewPatriciaTrie()
+	var keys []uint64
+	for i := 0; i < 20; i++ {
+		key := randUint64()
+		pt.Insert(key)
+		keys = append(keys, key)
+		if !pt.Search(key) {
+			t.Logf("%v", pt)
+			t.Fatalf("Key %v not found and has just been inserted", key)
+		}
+	}
+
+	for _, key := range keys {
+		if !pt.Search(key) {
+			t.Logf("%v", pt)
+			t.Fatalf("Key %v not found and has been inserted", key)
+		}
+	}
+}
+
+func TestBigNums(t *testing.T) {
+	inputs := []uint64{8687274117644003430, 3847324218752143314, 8288325916900217827,
+		6703941274231124092, 12719366974275247368, 9372252975772899476}
+	pt := NewPatriciaTrie()
+	for _, k := range inputs {
+		t.Logf("%b [%v]\n", k, bits.Len64(k))
+	}
+	for i, key := range inputs {
+		fmt.Println("NEXT KEY INSERT START ========================================")
+		// key = key >> 50
+		pt.Insert(key)
+		fmt.Printf("Trie with key %v\n%v\n\n\n", i, pt.toString(false))
+		if !pt.Search(key) {
+			t.Fatalf("Key %v not found and has just been inserted", key)
+		}
+	}
+
+}
+
+func TestSmallNums(t *testing.T) {
+	inputs := []uint64{60, 53, 57, 46, 47, 32}
+	for _, k := range inputs {
+		t.Logf("%b\n", k)
+	}
+	pt := NewPatriciaTrie()
+	for i, key := range inputs {
+		pt.Insert(key)
+		t.Logf("Trie with key %v\n%v\n\n\n", i, pt.toString(false))
+		if !pt.Search(key) {
+			t.Fatalf("Key %v not found and has just been inserted", key)
+		}
+	}
+
 }

@@ -6,6 +6,15 @@ import (
 	"github.com/disiqueira/gotree"
 )
 
+func contains(a *PatriciaTrieNode, list []*PatriciaTrieNode) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 type PatriciaTrieNode struct {
 	key       uint64
 	bit_index uint
@@ -25,7 +34,7 @@ func (ptn *PatriciaTrieNode) String() string {
 }
 
 func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
-	fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v\n", ptn, prev_bi, ptn.bit_index)
+	// fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v\n", ptn, prev_bi, ptn.bit_index)
 
 	if prev_bi >= ptn.bit_index {
 		return key == ptn.key
@@ -37,10 +46,10 @@ func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
 	}
 }
 
-func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
+func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) uint64 {
 	// fmt.Printf("prev_bi %v, bit_index %v [%v]\n", prev_bi, ptn.bit_index, uint(prev_bi))
 	if prev_bi >= ptn.bit_index {
-		return ptn
+		return ptn.key
 	}
 	if key&((1<<63)>>ptn.bit_index) == 0 {
 		return ptn.left.find(key, ptn.bit_index)
@@ -49,67 +58,50 @@ func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
 	}
 }
 
-func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieNode) bool {
-	// fmt.Printf("\n\n\nSTART\nParent Node: %v\nEnd Node: %v\nNode: %v\nCurrent Node: %v", parentNode, endNode, node, ptn)
-	// if ptn.bit_index <= parentNode.bit_index {
-	// 	return false
-	// }
+func (ptn *PatriciaTrieNode) insertNode(node *PatriciaTrieNode, seenNodes []*PatriciaTrieNode) bool {
+
 	var nextNode *PatriciaTrieNode
 	if node.key&((1<<63)>>ptn.bit_index) == 0 {
 		nextNode = ptn.left
 	} else {
 		nextNode = ptn.right
 	}
+	fmt.Printf("\n\n\nSTART\nCurrent Node: %v\nNode: %v\nInsert node: %v\n\n\n", ptn, nextNode, node)
+
 	// if nextNode.bit_index < node.bit_index && ptn != endNode {
-	if nextNode.bit_index < node.bit_index && parentNode.bit_index < ptn.bit_index {
-		return nextNode.insertNode(node, endNode, ptn)
+	// if nextNode.bit_index < node.bit_index && parentNode.bit_index < ptn.bit_index {
+	if nextNode.bit_index < node.bit_index && !contains(nextNode, seenNodes) {
+
+		return nextNode.insertNode(node, append(seenNodes, ptn))
 	} else {
 		// if node.bit_index > ptn.bit_index {
 		// 	parentNode = ptn
 		// 	ptn = nextNode
 		// }
 		// fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
-		if parentNode.right == ptn {
-			parentNode.right = node
-		} else if parentNode.left == ptn {
-			parentNode.left = node
+		fmt.Printf("\n\n\nCurrent Node: %v\nNode: %v\nInsert node: %v\n\n\n", ptn, nextNode, node)
+
+		if ptn.right == nextNode {
+			ptn.right = node
+		} else if ptn.left == nextNode {
+			ptn.left = node
 		} else {
 			fmt.Println("ERROR: I am no son of my parent")
 			return false
 		}
 
+		fmt.Printf("Comparison: %b & %b = %b (bit index: %v)\n", node.key, uint64((1<<63)>>node.bit_index), node.key&((1<<63)>>node.bit_index), node.bit_index)
 		if node.key&((1<<63)>>node.bit_index) == 0 {
 			node.left = node
-			node.right = ptn
+			node.right = nextNode
 		} else {
 			node.right = node
-			node.left = ptn
+			node.left = nextNode
 		}
 		// fmt.Printf("Parent Node: %v\nNew Node: %v\n", parentNode, node)
 		return true
 	}
 }
-
-// 	if prev_bi < ptn.bit_index {
-// 		return
-// 	}
-// 	if prev_bi > -1 && uint(prev_bi) >= ptn.bit_index {
-// 		fmt.Printf("Returning node: %p\n", ptn)
-// 		return ptn, nil
-// 	}
-// 	var parent, node *PatriciaTrieNode
-// 	if key&(1<<ptn.bit_index) == 0 {
-// 		node, parent = ptn.left.find(key, int(ptn.bit_index))
-// 	} else {
-// 		node, parent = ptn.right.find(key, int(ptn.bit_index))
-// 	}
-// 	if parent == nil {
-// 		parent = ptn
-// 	}
-// 	fmt.Printf("Returning parent: %p\n", ptn)
-// 	return node, parent
-//
-// }
 
 func (ptn *PatriciaTrieNode) depth(accDepth int) int {
 	fmt.Printf("right %v\nleft %v\nptn: %v\n", ptn.right, ptn.left, ptn)
@@ -129,31 +121,6 @@ func (ptn *PatriciaTrieNode) depth(accDepth int) int {
 	}
 	return ld
 }
-
-// func (ptn PatriciaTrieNode) toString(acc, prefix string) string {
-// 	if ptn.right == nil {
-// 		acc += fmt.Sprintf("-%v\n", ptn.key)
-// 	} else {
-// 		acc += fmt.Sprintf("-%v", ptn.key)
-// 		prefix += " |"
-// 	}
-// 	if ptn.left != nil {
-// 		acc += fmt.Sprintf("%v |", prefix)
-// 		ptn.left.toString(acc, prefix)
-// 	}
-// }
-
-// func Print(ptn *PatriciaTrieNode, prefix string) {
-// 	fmt.Printf("- %v", ptn.key)
-// 	if ptn.right != nil {
-// 		Print(ptn.right, fmt.Sprintf("%v |", prefix))
-// 	} else {
-// 		fmt.Println()
-// 		fmt.Printf("%v |\n", prefix)
-// 	}
-// 	fmt.Printf("%v %v")
-//
-// }
 
 func firstDiffBit(key1, key2 uint64) uint {
 	var lBitPos uint = 63
@@ -211,15 +178,43 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 		// HEADER AND +1 NODES
 
 		fmt.Println("More than 2 nodes and key not present in trie")
-		endNode := pt.header.left.find(key, 0)
-		reachedKey := endNode.key
+		reachedKey := pt.header.left.find(key, 0)
 		lBitPos := firstDiffBit(key, reachedKey)
 		node := &PatriciaTrieNode{key, lBitPos, nil, nil}
 
-		ok := pt.header.left.insertNode(node, endNode, pt.header)
-		if !ok {
-			fmt.Printf("ERROR: insertion of key %v was unsuccesful\n", key)
+		// if node needs to be inserted after header do it manually
+		if node.bit_index < pt.header.left.bit_index {
+			fmt.Println("Insta inserting")
+			fmt.Printf("Comparison: %b & %b = %b (bit index: %v)\n", node.key, uint64((1<<63)>>node.bit_index), node.key&((1<<63)>>node.bit_index), node.bit_index)
+
+			if node.key&((1<<63)>>node.bit_index) == 0 {
+				node.left = node
+				node.right = pt.header.left
+			} else {
+				node.right = node
+				node.left = pt.header.left
+			}
+			fmt.Printf("Final header: %v -> %v, _\nNew node: %v -> %v, %v\n%v\n",
+				pt.header.key, pt.header.left.key, node.key, node.left.key, node.right.key, pt.toString(false))
+			// fmt.Printf("Final header: %v, %v\n",
+			// 	pt.header.key, pt.header)
+			// fmt.Printf("New node: %v -> %v, %v\n%v\n", pt.header.key, pt.header.left.key, pt.header.right.key, node.key, node.left.key, node.right.key, pt.toString(false))
+
+			fmt.Printf("%v\n", pt.toString(false))
+
+			pt.header.left = node
+			fmt.Printf("Final header: %v -> %v, _\nNew node: %v -> %v, %v\n%v\n",
+				pt.header.key, pt.header.left.key, node.key, node.left.key, node.right.key, pt.toString(false))
+
+			fmt.Printf("%v\n", pt.toString(false))
+
+		} else {
+			ok := pt.header.left.insertNode(node, []*PatriciaTrieNode{pt.header})
+			if !ok {
+				fmt.Printf("ERROR: insertion of key %v was unsuccesful\n", key)
+			}
 		}
+
 	}
 
 	fmt.Printf("pt, %p\n", &pt)
@@ -233,47 +228,57 @@ func (pt *PatriciaTrie) Depth() int {
 	return pt.header.depth(1)
 }
 
-func (ptn *PatriciaTrieNode) populateTree(parent *gotree.Tree, dir string) {
-	txt := fmt.Sprintf("%v %b[%v]", dir, ptn.key, ptn.bit_index)
+func (ptn *PatriciaTrieNode) populateTree(parent *gotree.Tree, dir string, binary bool) {
+	var txt string
+	if binary {
+		txt = fmt.Sprintf("%v %b[%v]", dir, ptn.key, ptn.bit_index)
+	} else {
+		txt = fmt.Sprintf("%v %v[%v]", dir, ptn.key, ptn.bit_index)
+	}
 	if ptn.left != nil || ptn.right != nil {
 		l := "_"
 		r := "_"
 		if ptn.left != nil {
-			l = fmt.Sprintf("%b", ptn.left.key)
+			if binary {
+				l = fmt.Sprintf("%b", ptn.left.key)
+			} else {
+				l = fmt.Sprintf("%v", ptn.left.key)
+			}
 		}
 		if ptn.right != nil {
-			r = fmt.Sprintf("%b", ptn.right.key)
+			if binary {
+				l = fmt.Sprintf("%b", ptn.right.key)
+			} else {
+				l = fmt.Sprintf("%v", ptn.right.key)
+			}
 		}
 		txt += fmt.Sprintf(" -> (%v, %v)", l, r)
 	}
 	node := (*parent).Add(txt)
 	if ptn.left != nil && ptn.bit_index < ptn.left.bit_index {
-		ptn.left.populateTree(&node, "L")
+		ptn.left.populateTree(&node, "L", binary)
 	}
 	if ptn.right != nil && ptn.bit_index < ptn.right.bit_index {
-		ptn.right.populateTree(&node, "R")
+		ptn.right.populateTree(&node, "R", binary)
 	}
 }
 
-func print(ptn *PatriciaTrieNode) {
-	if ptn != nil {
-		if ptn.left != nil && ptn.bit_index < ptn.left.bit_index {
-			print(ptn.left)
-		}
-		fmt.Printf("%v", ptn.key)
-		if ptn.right != nil && ptn.bit_index < ptn.right.bit_index {
-			print(ptn.right)
-		}
-	}
-}
+func (pt *PatriciaTrie) String() string {
 
-func (pt *PatriciaTrie) Print() {
-	// fmt.Printf("Header %v", pt.header)
-	// print(pt.header)
 	header := gotree.New("Header")
 
-	pt.header.populateTree(&header, "")
+	pt.header.populateTree(&header, "", true)
 
-	fmt.Println(header.Print())
+	return header.Print()
+
+}
+
+func (pt *PatriciaTrie) toString(binary bool) string {
+
+	header := gotree.New("Header")
+
+	pt.header.populateTree(&header, "", binary)
+
+	return header.Print()
 
 }
