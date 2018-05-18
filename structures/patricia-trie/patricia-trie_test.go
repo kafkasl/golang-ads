@@ -5,6 +5,7 @@ import (
 	"math/bits"
 	"math/rand"
 	"testing"
+	"time"
 )
 
 func randUint64() uint64 {
@@ -316,7 +317,29 @@ func TestRandomSearch(t *testing.T) {
 	rand.Seed(666)
 	pt := NewPatriciaTrie()
 	var keys []uint64
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
+		key := randUint64()
+		pt.Insert(key)
+		keys = append(keys, key)
+		if !pt.Search(key) {
+			t.Logf("%v", pt)
+			t.Fatalf("Key %v not found and has just been inserted", key)
+		}
+	}
+
+	for _, key := range keys {
+		if !pt.Search(key) {
+			t.Logf("%v", pt)
+			t.Fatalf("Key %v not found and has been inserted", key)
+		}
+	}
+}
+
+func TestRandomSearch2(t *testing.T) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	pt := NewPatriciaTrie()
+	var keys []uint64
+	for i := 0; i < 1000; i++ {
 		key := randUint64()
 		pt.Insert(key)
 		keys = append(keys, key)
