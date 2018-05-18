@@ -62,7 +62,7 @@ func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) *PatriciaTrieNode {
 }
 
 func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieNode) bool {
-	fmt.Printf("\n\n\nSTART\nParent Node: %v\nEnd Node: %v\nNode: %v\nCurrent Node: %v", parentNode, endNode, node, ptn)
+	// fmt.Printf("\n\n\nSTART\nParent Node: %v\nEnd Node: %v\nNode: %v\nCurrent Node: %v", parentNode, endNode, node, ptn)
 	// if ptn.bit_index <= parentNode.bit_index {
 	// 	return false
 	// }
@@ -80,7 +80,7 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 		// 	parentNode = ptn
 		// 	ptn = nextNode
 		// }
-		fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
+		// fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
 		if parentNode.right == ptn {
 			parentNode.right = node
 		} else if parentNode.left == ptn {
@@ -89,7 +89,6 @@ func (ptn *PatriciaTrieNode) insertNode(node, endNode, parentNode *PatriciaTrieN
 			fmt.Println("ERROR: I am no son of my parent")
 			return false
 		}
-		fmt.Printf("COMPARISON: %08b, %v\n", node.key, node.key&((1<<63)>>node.bit_index))
 
 		if node.key&((1<<63)>>node.bit_index) == 0 {
 			node.left = node

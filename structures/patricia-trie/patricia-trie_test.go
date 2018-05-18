@@ -40,6 +40,43 @@ func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
 // 	}
 // 	fmt.Printf("\n\n\n\n")
 // }
+func TestEmpty(t *testing.T) {
+	pt := NewPatriciaTrie()
+	var i uint64
+	for i = 0; i < 10; i++ {
+		if pt.Search(i) {
+			t.Fatalf("Found %v and has not been inserted", i)
+		}
+	}
+
+	if pt.header != nil {
+		t.Fatalf("Header should be nil")
+	}
+}
+
+func TestHeaderOnly(t *testing.T) {
+	pt := NewPatriciaTrie()
+	var i uint64 = 0
+	pt.Insert(i)
+	if !pt.Search(i) {
+		t.Fatalf("Not found %v and has been inserted", i)
+	}
+	for i = 1; i < 10; i++ {
+		if pt.Search(i) {
+			t.Fatalf("Found %v and has not been inserted", i)
+		}
+	}
+
+	if pt.header.key != 0 {
+		t.Fatalf("Header key should be 0")
+	}
+	if pt.header.bit_index != 0 {
+		t.Fatalf("Header bit index should be 0")
+	}
+	if pt.header.key != 0 {
+		t.Fatalf("Header key should be 0")
+	}
+}
 
 func TestSearchHandbookStepByStep(t *testing.T) {
 	inputs := []uint64{5, 0, 2, 8, 4, 10}
