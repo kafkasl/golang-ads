@@ -1,14 +1,9 @@
-package structures
+package union_find
 
 import (
 	"bytes"
 	"fmt"
 )
-
-// type UnionFind interface {
-// 	Find() UnionFind
-// 	Union(other UnionFind) UnionFind
-// }
 
 type UnionFindSet struct {
 	g []int

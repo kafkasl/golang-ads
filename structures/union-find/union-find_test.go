@@ -1,4 +1,4 @@
-package structures
+package union_find
 
 import (
 	"fmt"

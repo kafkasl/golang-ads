@@ -1,4 +1,4 @@
-package structures
+package patricia-trie
 
 import (
 	"fmt"

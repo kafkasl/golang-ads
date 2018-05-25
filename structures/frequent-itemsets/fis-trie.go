@@ -1,4 +1,4 @@
-package trie
+package frequent_itemsets
 
 import (
 	"fmt"
@@ -13,6 +13,7 @@ func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 type TrieNode struct {
 	children  map[rune]*TrieNode
+	count     uint
 	endOfWord bool
 }
 
@@ -48,10 +49,10 @@ func (tn TrieNode) toString(prefix string) string {
 	for _, key := range keys {
 
 		if idx < len(tn.children)-1 {
-			text += prefix + " ├─ " + string(key) + "\n"
+			text += prefix + " ├─ " + string(key) + "[" + fmt.Sprintf("%v", tn.children[key].count) + "]" + "\n"
 			nprefix = prefix + " │ "
 		} else {
-			text += prefix + " └─ " + string(key) + "\n"
+			text += prefix + " └─ " + string(key) + "[" + fmt.Sprintf("%v", tn.children[key].count) + "]" + "\n"
 			nprefix = prefix + "   "
 		}
 		text += tn.children[key].toString(nprefix)
@@ -72,7 +73,7 @@ type Trie struct {
 }
 
 func NewTrie() Trie {
-	tn := TrieNode{make(map[rune]*TrieNode), false}
+	tn := TrieNode{make(map[rune]*TrieNode), 0, false}
 	return Trie{&tn}
 }
 
@@ -88,9 +89,10 @@ func (t Trie) Insert(key string) {
 	currentNode := t.root
 	for _, letter := range key {
 		if val, ok := currentNode.children[letter]; ok {
+			val.count++
 			currentNode = val
 		} else {
-			nn := &TrieNode{make(map[rune]*TrieNode), false}
+			nn := &TrieNode{make(map[rune]*TrieNode), 1, false}
 			currentNode.children[letter] = nn
 			currentNode = nn
 		}

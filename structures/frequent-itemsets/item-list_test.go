@@ -1,4 +1,4 @@
-package structures
+package frequent_itemsets
 
 import (
 	"testing"
