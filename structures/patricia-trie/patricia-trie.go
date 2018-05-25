@@ -66,42 +66,24 @@ func (ptn *PatriciaTrieNode) insertNode(node *PatriciaTrieNode, seenNodes []*Pat
 	} else {
 		nextNode = ptn.right
 	}
-	fmt.Printf("\n\n\nSTART\nCurrent Node: %v\nNode: %v\nInsert node: %v\n\n\n", ptn, nextNode, node)
 
-	// if nextNode.bit_index < node.bit_index && ptn != endNode {
-	// if nextNode.bit_index < node.bit_index && parentNode.bit_index < ptn.bit_index {
 	if nextNode.bit_index < node.bit_index && !contains(nextNode, seenNodes) {
 
 		return nextNode.insertNode(node, append(seenNodes, ptn))
 	} else {
-		// if node.bit_index > ptn.bit_index {
-		// 	parentNode = ptn
-		// 	ptn = nextNode
-		// }
-		// fmt.Printf("\n\n\nParent Node: %v\nNext Node: %v\nNode: %v\nCurrent node: %v\n\n\n", parentNode, nextNode, node, ptn)
-		fmt.Printf("\n\n\nCurrent Node: %v\nNode: %v\nInsert node: %v\n\n\n", ptn, nextNode, node)
 
 		if ptn.right == nextNode {
 			ptn.right = node
 		} else if ptn.left == nextNode {
 			ptn.left = node
 		}
+		node.reassignNode(node, nextNode)
 
-		fmt.Printf("Comparison: %b & %b = %b (bit index: %v)\n", node.key, uint64((1<<63)>>node.bit_index), node.key&((1<<63)>>node.bit_index), node.bit_index)
-		if node.key&((1<<63)>>(node.bit_index-1)) == 0 {
-			node.left = node
-			node.right = nextNode
-		} else {
-			node.right = node
-			node.left = nextNode
-		}
-		// fmt.Printf("Parent Node: %v\nNew Node: %v\n", parentNode, node)
 		return true
 	}
 }
 
 func (ptn *PatriciaTrieNode) depth(accDepth int) int {
-	fmt.Printf("right %v\nleft %v\nptn: %v\n", ptn.right, ptn.left, ptn)
 	if !((ptn.right != nil && ptn.right.bit_index > ptn.bit_index) ||
 		(ptn.left != nil && ptn.left.bit_index > ptn.bit_index)) {
 		return accDepth
@@ -117,6 +99,16 @@ func (ptn *PatriciaTrieNode) depth(accDepth int) int {
 		return rd
 	}
 	return ld
+}
+
+func (ptn *PatriciaTrieNode) reassignNode(node1, node2 *PatriciaTrieNode) {
+	if ptn.key&((1<<63)>>(ptn.bit_index-1)) == 0 {
+		ptn.left = node1
+		ptn.right = node2
+	} else {
+		ptn.right = node1
+		ptn.left = node2
+	}
 }
 
 func firstDiffBit(key1, key2 uint64) uint {
@@ -146,11 +138,9 @@ func (pt *PatriciaTrie) Search(key uint64) bool {
 }
 
 func (pt *PatriciaTrie) Insert(key uint64) {
-	fmt.Printf("Inserting key %v\n", key)
 	if pt.header == nil {
 		// HEADER IS EMPTY
 
-		fmt.Println("Header nil so inserting manually")
 		node := &PatriciaTrieNode{key, 0, nil, nil}
 		node.left = node
 		pt.header = node
@@ -159,45 +149,25 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 	} else if pt.header == pt.header.left && key != pt.header.key {
 		// ONLY HEADER EXISTS
 
-		fmt.Println("Only header present inserting left child")
 		lBitPos := firstDiffBit(key, pt.header.key)
 		node := &PatriciaTrieNode{key, lBitPos, nil, nil}
-		if node.key&((1<<63)>>(node.bit_index-1)) == 0 {
-			node.left = node
-			node.right = pt.header
-		} else {
-			node.right = node
-			node.left = pt.header
-		}
+
+		node.reassignNode(node, pt.header)
+
 		pt.header.left = node
 
 	} else if !pt.Search(key) {
 		// HEADER AND +1 NODES
 
-		fmt.Println("More than 2 nodes and key not present in trie")
 		reachedKey := pt.header.left.find(key, 0)
 		lBitPos := firstDiffBit(key, reachedKey)
 		node := &PatriciaTrieNode{key, lBitPos, nil, nil}
 
 		// if node needs to be inserted after header do it manually
+
 		if node.bit_index < pt.header.left.bit_index {
-			fmt.Println("Insta inserting")
-			fmt.Printf("Comparison: %b & %b = %b (bit index: %v)\n", node.key, uint64((1<<63)>>node.bit_index), node.key&((1<<63)>>node.bit_index), node.bit_index)
-
-			if node.key&((1<<63)>>(node.bit_index-1)) == 0 {
-				node.left = node
-				node.right = pt.header.left
-			} else {
-				node.right = node
-				node.left = pt.header.left
-			}
-			// fmt.Printf("Final header: %v -> %v, _\nNew node: %v -> %v, %v\n%v\n",
-			// 	pt.header.key, pt.header.left.key, node.key, node.left.key, node.right.key, pt.toString(false))
-
-			fmt.Printf("Final header: %v\nNew node: %v\n%v\n", pt.header, node, pt.toString(false))
-
+			node.reassignNode(node, pt.header.left)
 			pt.header.left = node
-			fmt.Printf("Final header: %v\nNew node: %v\n%v\n", pt.header, node, pt.toString(false))
 
 		} else {
 			ok := pt.header.left.insertNode(node, []*PatriciaTrieNode{pt.header})
@@ -209,8 +179,6 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 
 	}
 
-	fmt.Printf("pt, %p\n", &pt)
-	fmt.Printf("Key %v inserted\n", key)
 }
 
 func (pt *PatriciaTrie) Depth() int {
