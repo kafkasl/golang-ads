@@ -12,28 +12,8 @@ func (p RuneSlice) Less(i, j int) bool { return p[i] < p[j] }
 func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 type TrieNode struct {
-	children  map[rune]*TrieNode
-	count     uint
-	endOfWord bool
-}
-
-func (tn TrieNode) Words(currentWord string) []string {
-	words := []string{}
-	if tn.endOfWord {
-		return append(words, currentWord)
-	}
-	if len(tn.children) > 0 {
-		keys := make([]rune, 0)
-		for k, _ := range tn.children {
-			keys = append(keys, k)
-		}
-		sort.Sort(RuneSlice(keys))
-
-		for _, key := range keys {
-			words = append(words, tn.children[key].Words(currentWord+string(key))...)
-		}
-	}
-	return words
+	children map[rune]*TrieNode
+	count    uint
 }
 
 func (tn TrieNode) toString(prefix string) string {
@@ -63,9 +43,9 @@ func (tn TrieNode) toString(prefix string) string {
 func (tn TrieNode) String() string {
 	text := ""
 	for k, _ := range tn.children {
-		text += string(k)
+		text += string(k) + " "
 	}
-	return fmt.Sprintf("Children: %v. EOW: %v", text, tn.endOfWord)
+	return fmt.Sprintf("Children: %v.", text)
 }
 
 type Trie struct {
@@ -73,16 +53,12 @@ type Trie struct {
 }
 
 func NewTrie() Trie {
-	tn := TrieNode{make(map[rune]*TrieNode), 0, false}
+	tn := TrieNode{make(map[rune]*TrieNode), 0}
 	return Trie{&tn}
 }
 
 func (t Trie) String() string {
 	return "Trie:\n" + t.root.toString("")
-}
-
-func (t Trie) Words() []string {
-	return t.root.Words("")
 }
 
 func (t Trie) Insert(key string) {
@@ -92,22 +68,21 @@ func (t Trie) Insert(key string) {
 			val.count++
 			currentNode = val
 		} else {
-			nn := &TrieNode{make(map[rune]*TrieNode), 1, false}
+			nn := &TrieNode{make(map[rune]*TrieNode), 1}
 			currentNode.children[letter] = nn
 			currentNode = nn
 		}
 	}
-	currentNode.endOfWord = true
 }
 
-func (t Trie) Search(key string) bool {
-	currentNode := t.root
-	for _, letter := range key {
-		if val, ok := currentNode.children[letter]; ok {
-			currentNode = val
-		} else {
-			return false
-		}
-	}
-	return currentNode.endOfWord
-}
+// func (t Trie) Search(key string) bool {
+// 	currentNode := t.root
+// 	for _, letter := range key {
+// 		if val, ok := currentNode.children[letter]; ok {
+// 			currentNode = val
+// 		} else {
+// 			return false
+// 		}
+// 	}
+// 	return currentNode.endOfWord
+// }

@@ -75,7 +75,6 @@ func ExampleBuildTrie() {
 		strTx := ""
 		orderedTx := orderTx(*tx, il)
 		for _, e := range orderedTx {
-
 			strTx += ToCharStr(e)
 		}
 		t.Insert(strTx)
