@@ -5,21 +5,21 @@ import (
 	"sort"
 )
 
-type RuneSlice []rune
+type RuneSlice []string
 
 func (p RuneSlice) Len() int           { return len(p) }
 func (p RuneSlice) Less(i, j int) bool { return p[i] < p[j] }
 func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 type TrieNode struct {
-	children map[rune]*TrieNode
+	children map[string]*TrieNode
 	count    uint
 }
 
 func (tn TrieNode) toString(prefix string) string {
 	var text string = ""
 	var nprefix string
-	keys := make([]rune, 0)
+	keys := make([]string, 0)
 	for k, _ := range tn.children {
 		keys = append(keys, k)
 	}
@@ -53,7 +53,7 @@ type Trie struct {
 }
 
 func NewTrie() Trie {
-	tn := TrieNode{make(map[rune]*TrieNode), 0}
+	tn := TrieNode{make(map[string]*TrieNode), 0}
 	return Trie{&tn}
 }
 
@@ -64,12 +64,12 @@ func (t Trie) String() string {
 func (t Trie) Insert(key string) {
 	currentNode := t.root
 	for _, letter := range key {
-		if val, ok := currentNode.children[letter]; ok {
+		if val, ok := currentNode.children[string(letter)]; ok {
 			val.count++
 			currentNode = val
 		} else {
-			nn := &TrieNode{make(map[rune]*TrieNode), 1}
-			currentNode.children[letter] = nn
+			nn := &TrieNode{make(map[string]*TrieNode), 1}
+			currentNode.children[string(letter)] = nn
 			currentNode = nn
 		}
 	}

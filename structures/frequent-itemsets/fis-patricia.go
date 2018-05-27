@@ -1,7 +1,6 @@
 package frequent_itemsets
 
 import (
-	"bytes"
 	"fmt"
 )
 
@@ -11,7 +10,7 @@ import (
 // 		return append(words, currentWord)
 // 	}
 // 	if len(tn.children) > 0 {
-// 		keys := make([]rune, 0)
+// 		keys := make([]string, 0)
 // 		for k, _ := range tn.children {
 // 			keys = append(keys, k)
 // 		}
@@ -27,7 +26,7 @@ import (
 // func (tn TrieNode) toString(prefix string) string {
 // 	var text string = ""
 // 	var nprefix string
-// 	keys := make([]rune, 0)
+// 	keys := make([]string, 0)
 // 	for k, _ := range tn.children {
 // 		keys = append(keys, k)
 // 	}
@@ -65,16 +64,15 @@ import (
 // 	}
 // }
 
-func (tn *TrieNode) Compress(myKey rune, accKey []rune, accCount uint, ancestor **TrieNode) {
+func (tn *TrieNode) Compress(myKey string, accKey string, accCount uint, ancestor **TrieNode) {
 	fmt.Printf("Call: \n\tmyKey: %v[%v]\n\taccKey: %v \n\taccCount %v\n\tAncestor %v\n",
 		string(myKey), tn.count, accKey, accCount, ancestor)
-	var buffer bytes.Buffer
 
 	// if tn.count == accCount && len(tn.children) == 1 {
 
 	// 	for k, v := range nn.children {
 	// 		// fmt.Printf("1. Compressing: k: %v v: %v\n", string(k), v)
-	// 		v.Compress(k, append(accKey, myKey), tn.count, ancestor)
+	// 		v.Compress(k, accKey + myKey, tn.count, ancestor)
 	// 	}
 	// } else if tn.count != accCount {
 	// 	if len(accKey) > 1 {
@@ -82,46 +80,40 @@ func (tn *TrieNode) Compress(myKey rune, accKey []rune, accCount uint, ancestor 
 
 	// 	}
 	// }
+	fmt.Printf("childs %v", tn.children)
 	if tn.count == accCount && len(tn.children) == 1 {
+
+		// ((tn.count != accCount || len(tn.children) > 1 || tn.children == nil) && *ancestor == tn) {
 
 		for k, v := range tn.children {
 			// fmt.Printf("1. Compressing: k: %v v: %v\n", string(k), v)
-			v.Compress(k, append(accKey, myKey), tn.count, ancestor)
+			v.Compress(k, accKey+k, tn.count, ancestor)
 		}
 	} else if tn.count != accCount {
-		delete((*ancestor).children, accKey[0])
-		for _, r := range accKey {
-			buffer.WriteRune(r)
+		delete((*ancestor).children, string(accKey[0]))
 
-		}
-		children := make(map[rune]*TrieNode)
+		children := make(map[string]*TrieNode)
 		children[myKey] = tn
 		nn := &TrieNode{children, accCount}
-		newKey, _, _ := buffer.ReadRune()
-		(*ancestor).children[newKey] = nn
-		fmt.Printf("newKey %v %v", newKey, nn)
+		(*ancestor).children[accKey[0:len(accKey)-1]] = nn
+		// fmt.Printf("newKey %v %v", newKey, nn)
 
 		for k, v := range nn.children {
 			// fmt.Printf("1. Compressing: k: %v v: %v\n", string(k), v)
-			v.Compress(k, []rune{k}, tn.count, &nn)
+			v.Compress(k, k, tn.count, &nn)
 		}
-	} else if len(tn.children) > 1 || tn.children == nil {
+	} else if len(tn.children) > 1 || len(tn.children) == 0 {
 		// Have the same key as the last one
-		delete((*ancestor).children, accKey[0])
-		for _, r := range accKey {
-			buffer.WriteRune(r)
+		delete((*ancestor).children, string(accKey[0]))
 
-		}
-		buffer.WriteRune(myKey)
 		nn := &TrieNode{tn.children, accCount}
-		newKey, _, _ := buffer.ReadRune()
-		(*ancestor).children[newKey] = nn
+		(*ancestor).children[accKey] = nn
 
-		fmt.Printf("newKey %v %v", newKey, nn)
+		// fmt.Printf("newKey %v %v", newKey, nn)
 
+		fmt.Printf("2. Compressing: k: %v v: %v\n", string(accKey), nn)
 		for k, v := range nn.children {
-			fmt.Printf("2. Compressing: k: %v v: %v\n", string(k), v)
-			v.Compress(k, []rune{k}, v.count, &tn)
+			v.Compress(k, k, v.count, &tn)
 		}
 	}
 	// else {
@@ -139,7 +131,7 @@ type FISPatriciaTrie struct {
 	root *TrieNode
 }
 
-// func (tn *TrieNode) dCompress(mykey, accKey rune, accCount uint) (key rune, count uint, nextNode *TrieNode) {
+// func (tn *TrieNode) dCompress(mykey, accKey string, accCount uint) (key string, count uint, nextNode *TrieNode) {
 // 	if tn.count != accCount {
 // 		return accKey, accCount, &tn
 // 	}
@@ -152,7 +144,7 @@ type FISPatriciaTrie struct {
 func NewFISPatriciaTrie(trie Trie) Trie {
 
 	for k, v := range trie.root.children {
-		v.Compress(k, []rune{k}, v.count, &trie.root)
+		v.Compress(k, k, v.count, &trie.root)
 	}
 	return trie
 }
@@ -173,7 +165,7 @@ func NewFISPatriciaTrie(trie Trie) Trie {
 // 			val.count++
 // 			currentNode = val
 // 		} else {
-// 			nn := &TrieNode{make(map[rune]*TrieNode), 1, false}
+// 			nn := &TrieNode{make(map[string]*TrieNode), 1, false}
 // 			currentNode.children[letter] = nn
 // 			currentNode = nn
 // 		}
