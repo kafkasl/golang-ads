@@ -2,38 +2,37 @@ package frequent_itemsets
 
 import (
 	"fmt"
-	"sort"
 )
 
-type Pair struct {
-	key   uint
-	count uint
-}
-
-type PairSlice []Pair
-
-func (p PairSlice) Len() int { return len(p) }
-func (p PairSlice) Less(i, j int) bool {
-	if p[i].count == p[j].count {
-		return p[i].key > p[j].key
-	}
-	return p[i].count < p[j].count
-}
-func (p PairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
-
-func orderTx(list []uint, itemlist *ItemList) (result []uint) {
-	var ps PairSlice
-	for _, key := range list {
-		if item, ok := itemlist.v[key]; ok {
-			ps = append(ps, Pair{key, item.count})
-		}
-	}
-	sort.Sort(sort.Reverse(ps))
-	for _, pair := range ps {
-		result = append(result, pair.key)
-	}
-	return
-}
+// type Pair struct {
+// 	key   uint
+// 	count uint
+// }
+//
+// type PairSlice []Pair
+//
+// func (p PairSlice) Len() int { return len(p) }
+// func (p PairSlice) Less(i, j int) bool {
+// 	if p[i].count == p[j].count {
+// 		return p[i].key > p[j].key
+// 	}
+// 	return p[i].count < p[j].count
+// }
+// func (p PairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+//
+// func orderTx(list []uint, itemlist *ItemList) (result []uint) {
+// 	var ps PairSlice
+// 	for _, key := range list {
+// 		if item, ok := itemlist.v[key]; ok {
+// 			ps = append(ps, Pair{key, item.count})
+// 		}
+// 	}
+// 	sort.Sort(sort.Reverse(ps))
+// 	for _, pair := range ps {
+// 		result = append(result, pair.key)
+// 	}
+// 	return
+// }
 
 func ExamplePaper() {
 
@@ -71,10 +70,10 @@ func ExampleBuildTrie() {
 
 	il := NewItemList(dataset, 3)
 
-	for _, tx := range *dataset {
+	for _, tx := range il.txs {
 		strTx := ""
-		orderedTx := orderTx(*tx, il)
-		for _, e := range orderedTx {
+		// orderedTx := orderTx(*tx, il)
+		for _, e := range *tx {
 			strTx += ToCharStr(e)
 		}
 		t.Insert(strTx)

@@ -21,6 +21,30 @@ func (p ItemSlice) Less(i, j int) bool {
 }
 func (p ItemSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
 
+type OrderingItems struct {
+	list  *[]uint
+	items *map[uint]*Item
+}
+
+func (oi OrderingItems) Len() int { return len(*oi.list) }
+func (oi OrderingItems) Less(i, j int) bool {
+	ki, kj := (*oi.list)[i], (*oi.list)[j]
+	if (*oi.items)[ki].count == (*oi.items)[kj].count {
+		return ki > kj
+	}
+	return (*oi.items)[ki].count < (*oi.items)[kj].count
+}
+
+func (oi OrderingItems) Swap(i, j int) { (*oi.list)[i], (*oi.list)[j] = (*oi.list)[j], (*oi.list)[i] }
+
+func orderTx(list *[]uint, itemlist *map[uint]*Item) {
+	oi := OrderingItems{list, itemlist}
+
+	sort.Sort(sort.Reverse(oi))
+
+	return
+}
+
 // Data structures
 
 type ThreadedList struct {
@@ -77,14 +101,17 @@ func (item *Item) Insert(list *[]uint) {
 }
 
 type ItemList struct {
-	v map[uint]*Item
+	v   map[uint]*Item
+	txs []*[]uint
 }
 
 // Data structures methods
 func NewItemList(dataset *[]*[]uint, minSupport uint) *ItemList {
 	var v map[uint]*Item = make(map[uint]*Item)
+	var txs []*[]uint = make([]*[]uint, len(*dataset))
 
-	for _, tx := range *dataset {
+	for i, tx := range *dataset {
+		txs[i] = tx
 		for _, l := range *tx {
 			if item, ok := v[l]; ok {
 				item.count++
@@ -95,12 +122,33 @@ func NewItemList(dataset *[]*[]uint, minSupport uint) *ItemList {
 
 		}
 	}
+
+	for _, tx := range txs {
+		var newTx []uint
+		for _, l := range *tx {
+			if v[l].count >= minSupport {
+				newTx = append(newTx, l)
+
+			}
+			orderTx(&newTx, &v)
+			*tx = newTx
+		}
+	}
+
 	for _, l := range v {
 		if l.count < minSupport {
 			delete(v, l.element)
 		}
 	}
-	return &ItemList{v}
+
+	// for _, tx := range txs {
+	// 	fmt.Print("\nTX:")
+	// 	for _, e := range *tx {
+	// 		fmt.Printf("%v ", ToCharStr(e))
+	// 	}
+	// }
+
+	return &ItemList{v, txs}
 }
 
 func (il ItemList) String() string {
@@ -115,14 +163,3 @@ func (il ItemList) String() string {
 	}
 	return str
 }
-
-//
-// func (il ItemList) Frequencies() []uint {
-// 	var is ItemSlice
-// 	for _, e := range il.v {
-// 		is = append(is, *e)
-// 	}
-// 	sort.Sort(sort.Reverse(is))
-//
-//     frequencies :=
-// }

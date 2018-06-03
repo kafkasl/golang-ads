@@ -7,6 +7,15 @@ import (
 
 func TestPatriciaBuilding(t *testing.T) {
 	trie := NewTrie()
+	output := "Trie:\n" +
+		" └─ B[6]\n" +
+		"    ├─ ADF[4]\n" +
+		"    │  ├─ GH[1]\n" +
+		"    │  └─ L[2]\n" +
+		"    │     ├─ G[1]\n" +
+		"    │     └─ H[1]\n" +
+		"    └─ L[2]\n" +
+		"       └─ GH[1]\n"
 
 	var dataset *[]*[]uint = &[]*[]uint{
 		&[]uint{1, 2, 4, 5, 6, 7, 8, 9},
@@ -18,10 +27,10 @@ func TestPatriciaBuilding(t *testing.T) {
 
 	il := NewItemList(dataset, 3)
 
-	for _, tx := range *dataset {
+	for _, tx := range il.txs {
 		strTx := ""
-		orderedTx := orderTx(*tx, il)
-		for _, e := range orderedTx {
+		// orderedTx := orderTx(*tx, il)
+		for _, e := range *tx {
 			strTx += ToCharStr(e)
 		}
 		trie.Insert(strTx)
@@ -31,19 +40,9 @@ func TestPatriciaBuilding(t *testing.T) {
 
 	fisPTrie := NewFISPatriciaTrie(trie)
 
-	fmt.Printf("Patricia version\n%s\n", fisPTrie)
-	// Output: Trie:
-	//  └─ B[6]
-	//     ├─ A[4]
-	//     │  └─ D[4]
-	//     │     └─ F[4]
-	//     │        ├─ G[1]
-	//     │        │  └─ H[1]
-	//     │        └─ L[2]
-	//     │           ├─ G[1]
-	//     │           └─ H[1]
-	//     └─ L[2]
-	//        └─ G[1]
-	//           └─ H[1]
+	str := fisPTrie.String()
+	if str != output {
+		t.Fatalf("Expected Patricia Trie: \n%s\nFound: \n%s\n", output, str)
+	}
 
 }
