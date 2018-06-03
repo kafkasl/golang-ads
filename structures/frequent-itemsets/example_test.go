@@ -48,13 +48,14 @@ func ExamplePaper() {
 
 	fmt.Printf("%v", il)
 
-	// Output:B [6]: [A B D E F G H I] + [B C E L] + [A B D F H L] + [A B C D F G L] + [B G H L] + [A B D F I]
-	// A [4]: [A B D E F G H I] + [A B D F H L] + [A B C D F G L] + [A B D F I]
-	// D [4]: [A B D E F G H I] + [A B D F H L] + [A B C D F G L] + [A B D F I]
-	// F [4]: [A B D E F G H I] + [A B D F H L] + [A B C D F G L] + [A B D F I]
-	// L [4]: [B C E L] + [A B D F H L] + [A B C D F G L] + [B G H L]
-	// G [3]: [A B D E F G H I] + [A B C D F G L] + [B G H L]
-	// H [3]: [A B D E F G H I] + [A B D F H L] + [B G H L]
+	// Output:B [6]: [B A D F G H] + [B L] + [B A D F L H] + [B A D F L G] + [B L G H] + [B A D F]
+	//A [4]: [B A D F G H] + [B A D F L H] + [B A D F L G] + [B A D F]
+	//D [4]: [B A D F G H] + [B A D F L H] + [B A D F L G] + [B A D F]
+	//F [4]: [B A D F G H] + [B A D F L H] + [B A D F L G] + [B A D F]
+	//L [4]: [B L] + [B A D F L H] + [B A D F L G] + [B L G H]
+	//G [3]: [B A D F G H] + [B A D F L G] + [B L G H]
+	//H [3]: [B A D F G H] + [B A D F L H] + [B L G H]
+
 }
 
 func ExampleBuildTrie() {

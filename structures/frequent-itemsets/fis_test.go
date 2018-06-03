@@ -3,6 +3,8 @@ package frequent_itemsets
 import (
 	"fmt"
 	"testing"
+
+	"github.com/OneOfOne/go-utils/memory"
 )
 
 func TestPatriciaBuilding(t *testing.T) {
@@ -44,5 +46,7 @@ func TestPatriciaBuilding(t *testing.T) {
 	if str != output {
 		t.Fatalf("Expected Patricia Trie: \n%s\nFound: \n%s\n", output, str)
 	}
+
+	fmt.Printf("Size of Frequent Itemset Patricia Trie: %v\n", memory.Sizeof(fisPTrie))
 
 }
