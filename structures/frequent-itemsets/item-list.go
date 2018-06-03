@@ -141,14 +141,11 @@ func NewItemList(dataset *[]*[]uint, minSupport uint) *ItemList {
 		}
 	}
 
-	// for _, tx := range txs {
-	// 	fmt.Print("\nTX:")
-	// 	for _, e := range *tx {
-	// 		fmt.Printf("%v ", ToCharStr(e))
-	// 	}
-	// }
-
 	return &ItemList{v, txs}
+}
+
+func (il ItemList) Transactions() []*[]uint {
+	return il.txs
 }
 
 func (il ItemList) String() string {
