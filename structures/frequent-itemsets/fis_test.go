@@ -28,6 +28,7 @@ func TestPatriciaBuilding(t *testing.T) {
 		&[]uint{1, 2, 4, 6, 9}}
 
 	il := NewItemList(dataset, 3)
+	fmt.Printf("Size of Itemlist: %v\n", memory.Sizeof(il))
 
 	for _, tx := range il.txs {
 		strTx := ""
@@ -39,6 +40,7 @@ func TestPatriciaBuilding(t *testing.T) {
 	}
 
 	fmt.Printf("%v", trie)
+	fmt.Printf("Size of Trie: %v\n", memory.Sizeof(trie))
 
 	fisPTrie := NewFISPatriciaTrie(trie)
 
@@ -47,6 +49,7 @@ func TestPatriciaBuilding(t *testing.T) {
 		t.Fatalf("Expected Patricia Trie: \n%s\nFound: \n%s\n", output, str)
 	}
 
+	fmt.Printf("IL :\n%v\nTrie: \n%v\nPatricia \n%v\n", il, trie, fisPTrie)
 	fmt.Printf("Size of Frequent Itemset Patricia Trie: %v\n", memory.Sizeof(fisPTrie))
 
 }
