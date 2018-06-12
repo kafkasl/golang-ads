@@ -1,4 +1,4 @@
-package union-find
+package patricia_trie
 
 import (
 	"fmt"
@@ -100,7 +100,6 @@ func (ptn *PatriciaTrieNode) depth(accDepth int) int {
 	}
 	return ld
 }
-
 func (ptn *PatriciaTrieNode) reassignNode(node1, node2 *PatriciaTrieNode) {
 	if ptn.key&((1<<63)>>(ptn.bit_index-1)) == 0 {
 		ptn.left = node1

@@ -1,4 +1,4 @@
-package patricia-trie
+package patricia_trie
 
 import (
 	"fmt"
