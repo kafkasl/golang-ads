@@ -1,0 +1,5 @@
+data/pumsb_star.dat filter=lfs diff=lfs merge=lfs -text
+data/chess.dat filter=lfs diff=lfs merge=lfs -text
+data/connect.dat filter=lfs diff=lfs merge=lfs -text
+data/mushroom.dat filter=lfs diff=lfs merge=lfs -text
+data/pumsb.dat filter=lfs diff=lfs merge=lfs -text

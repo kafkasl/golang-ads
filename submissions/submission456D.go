@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -20,57 +19,6 @@ type TrieNode struct {
 	endOfWord bool
 }
 
-func (tn TrieNode) Words(currentWord string) []string {
-	words := []string{}
-	if tn.endOfWord {
-		return append(words, currentWord)
-	}
-	if len(tn.children) > 0 {
-		keys := make([]rune, 0)
-		for k, _ := range tn.children {
-			keys = append(keys, k)
-		}
-		sort.Sort(RuneSlice(keys))
-
-		for _, key := range keys {
-			words = append(words, tn.children[key].Words(currentWord+string(key))...)
-		}
-	}
-	return words
-}
-
-func (tn TrieNode) toString(prefix string) string {
-	var text string = ""
-	var nprefix string
-	keys := make([]rune, 0)
-	for k, _ := range tn.children {
-		keys = append(keys, k)
-	}
-	sort.Sort(RuneSlice(keys))
-
-	idx := 0
-	for _, key := range keys {
-
-		if idx < len(tn.children)-1 {
-			text += prefix + " ├─ " + string(key) + "\n"
-			nprefix = prefix + " │ "
-		} else {
-			text += prefix + " └─ " + string(key) + "\n"
-			nprefix = prefix + "   "
-		}
-		text += tn.children[key].toString(nprefix)
-		idx++
-	}
-	return text
-}
-func (tn TrieNode) String() string {
-	text := ""
-	for k, _ := range tn.children {
-		text += string(k)
-	}
-	return fmt.Sprintf("Children: %v. EOW: %v", text, tn.endOfWord)
-}
-
 type Trie struct {
 	root *TrieNode
 }
@@ -78,14 +26,6 @@ type Trie struct {
 func NewTrie() Trie {
 	tn := TrieNode{make(map[rune]*TrieNode), false}
 	return Trie{&tn}
-}
-
-func (t Trie) String() string {
-	return "Trie:\n" + t.root.toString("")
-}
-
-func (t Trie) Words() []string {
-	return t.root.Words("")
 }
 
 func (t Trie) Insert(key string) {

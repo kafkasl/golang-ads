@@ -1,20 +1,20 @@
-package structures
+package union_find
 
 import "fmt"
 
-type UnionFindSet struct {
-	parent *UnionFindSet
+type UnionFinSetwRP struct {
+	parent *UnionFinSetwRP
 	rank   int
 	value  int
 }
 
-func NewUnionFindSet(value int) *UnionFindSet {
-	uf := UnionFindSet{nil, 0, value}
+func NewUnionFinSetwRP(value int) *UnionFinSetwRP {
+	uf := UnionFinSetwRP{nil, 0, value}
 	uf.parent = &uf
 	return &uf
 }
 
-func (uf *UnionFindSet) Find() *UnionFindSet {
+func (uf *UnionFinSetwRP) Find() *UnionFinSetwRP {
 	if uf.parent == uf {
 		return uf
 	}
@@ -22,7 +22,7 @@ func (uf *UnionFindSet) Find() *UnionFindSet {
 
 }
 
-func (uf *UnionFindSet) Union(other *UnionFindSet) *UnionFindSet {
+func (uf *UnionFinSetwRP) Union(other *UnionFinSetwRP) *UnionFinSetwRP {
 	ufParent := uf.Find()
 	otherParent := other.Find()
 	if ufParent == otherParent {
@@ -41,7 +41,7 @@ func (uf *UnionFindSet) Union(other *UnionFindSet) *UnionFindSet {
 
 }
 
-func (uf *UnionFindSet) String() string {
+func (uf *UnionFinSetwRP) String() string {
 	if uf.parent == uf {
 		return fmt.Sprintf("[%v]: %v", uf.rank, uf.value)
 	}

@@ -140,7 +140,7 @@ func findConnectedComponents(sets *UnionFindSet, edges []EdgeWeight) (result []i
 	return
 }
 
-func ExampleComponentsConnexes1() {
+func ExampleConnectedComponents1() {
 	input := "4 5\n0 1\n0 2\n1 2\n3 2\n3 1\n"
 
 	n, _, edges := parseInputCC(input)
@@ -157,7 +157,7 @@ func ExampleComponentsConnexes1() {
 	}
 	// Output: 3 2 2 1 1
 }
-func ExampleComponentsConnexes2() {
+func ExampleConnectedComponents2() {
 	input := "100000 4\n17 751\n17 1024\n0 99999\n1024 751\n"
 
 	n, _, edges := parseInputCC(input)

@@ -39,7 +39,7 @@ func RandStringBytesMaskImprSrc(n int) string {
 
 func TestInitializer(t *testing.T) {
 
-	d := NewDictionary(0.5, 666)
+	d := NewDictionary(0.5)
 	node := d.Lookup(5)
 	if node != nil {
 		t.Fatalf("Searching for non-present key, should return nil, returned: %v\n", node)
@@ -72,7 +72,7 @@ func TestInsert(t *testing.T) {
 		19: "cc",
 	}
 
-	d := NewDictionary(0.5, 666)
+	d := NewDictionary(0.5)
 
 	for k, v := range input {
 		d.Insert(k, v)
@@ -121,7 +121,7 @@ func TestInsertDelete(t *testing.T) {
 		19: "cc",
 	}
 
-	d := NewDictionary(0.5, 666)
+	d := NewDictionary(0.5)
 
 	for k, v := range input {
 		d.Insert(k, v)
@@ -173,7 +173,7 @@ func TestRepeatedInsert(t *testing.T) {
 
 	var input = []string{"aa", "ab", "ac", "ba", "bb", "bc", "ca", "cb", "cc"}
 
-	d := NewDictionary(0.5, 666)
+	d := NewDictionary(0.5)
 
 	for _, v := range input {
 		d.Insert(1, v)
@@ -192,7 +192,7 @@ func TestRepeatedInsert(t *testing.T) {
 
 func TestRandomInsert(t *testing.T) {
 
-	d := NewDictionary(0.5, 666)
+	d := NewDictionary(0.5)
 
 	for i := 0; i < 1000; i++ {
 		k, v := rand.Int(), RandStringBytesMaskImprSrc(5)
@@ -207,7 +207,7 @@ func TestRandomInsert(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	d := NewDictionary(1.1, 666) // with 1.1 height is never augmented
+	d := NewDictionary(1.1) // with 1.1 height is never augmented
 
 	output := d.String()
 	expected_output := ""

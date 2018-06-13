@@ -32,8 +32,7 @@ type Dictionary struct {
 	p      float32
 }
 
-func NewDictionary(p float32, randSeed int64) *Dictionary {
-	rand.Seed(randSeed)
+func NewDictionary(p float32) *Dictionary {
 
 	start := NewSkipListNode(math.MinInt64, "start", 1)
 	end := NewSkipListNode(math.MaxInt64, "end", 1)

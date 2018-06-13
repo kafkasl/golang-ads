@@ -9,16 +9,6 @@ func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
 	t.Fatalf("Expected: \n%v, but got: \n%v\n", expected, got)
 }
 
-//
-// func contains(list []string, target string) bool {
-// 	for _, element := range list {
-// 		if target == element {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
-//
 func TestInitializer(t *testing.T) {
 
 	uf := NewUnionFindSet(5)

@@ -74,15 +74,3 @@ func (t Trie) Insert(key string) {
 		}
 	}
 }
-
-// func (t Trie) Search(key string) bool {
-// 	currentNode := t.root
-// 	for _, letter := range key {
-// 		if val, ok := currentNode.children[letter]; ok {
-// 			currentNode = val
-// 		} else {
-// 			return false
-// 		}
-// 	}
-// 	return currentNode.endOfWord
-// }
