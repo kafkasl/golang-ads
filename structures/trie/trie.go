@@ -28,7 +28,7 @@ func (tn TrieNode) Words(currentWord string) []string {
 		}
 		sort.Sort(RuneSlice(keys))
 
-		for _, key := range keys {
+		for _, key := range keys[:] {
 			words = append(words, tn.children[key].Words(currentWord+string(key))...)
 		}
 	}
@@ -45,7 +45,7 @@ func (tn TrieNode) toString(prefix string) string {
 	sort.Sort(RuneSlice(keys))
 
 	idx := 0
-	for _, key := range keys {
+	for _, key := range keys[:] {
 
 		if idx < len(tn.children)-1 {
 			text += prefix + " ├─ " + string(key) + "\n"
@@ -86,7 +86,7 @@ func (t Trie) Words() []string {
 
 func (t Trie) Insert(key string) {
 	currentNode := t.root
-	for _, letter := range key {
+	for _, letter := range key[:] {
 		if val, ok := currentNode.children[letter]; ok {
 			currentNode = val
 		} else {
@@ -100,7 +100,7 @@ func (t Trie) Insert(key string) {
 
 func (t Trie) Search(key string) bool {
 	currentNode := t.root
-	for _, letter := range key {
+	for _, letter := range key[:] {
 		if val, ok := currentNode.children[letter]; ok {
 			currentNode = val
 		} else {

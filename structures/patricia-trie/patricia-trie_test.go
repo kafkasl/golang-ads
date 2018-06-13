@@ -202,7 +202,7 @@ func TestDepth(t *testing.T) {
 		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
 	}
 
-	for eDepth, i := range inputs {
+	for eDepth, i := range inputs[:] {
 		pt.Insert(i)
 		t.Logf("%v", pt)
 		d := pt.Depth()
@@ -219,7 +219,7 @@ func TestDepthReverse(t *testing.T) {
 		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
 	}
 
-	for eDepth, i := range inputs {
+	for eDepth, i := range inputs[:] {
 		pt.Insert(i)
 		t.Logf("%v", pt)
 		d := pt.Depth()
@@ -235,11 +235,11 @@ func TestManyConfigsConstruct(t *testing.T) {
 		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
 	}
 
-	for _, i := range inputs {
+	for _, i := range inputs[:] {
 		pt.Insert(i)
 		t.Logf("%v", pt)
 	}
-	for _, i := range inputs {
+	for _, i := range inputs[:] {
 		if !pt.Search(i) {
 			t.Fatalf("Key %v not found", i)
 		}
@@ -254,7 +254,7 @@ func TestDepthRight(t *testing.T) {
 		t.Fatalf("Depth is wrong, expected value: %v, found: %v", 0, pt.Depth())
 	}
 
-	for _, i := range inputs {
+	for _, i := range inputs[:] {
 		pt.Insert(i)
 	}
 	if pt.Depth() != 5 {
@@ -271,7 +271,7 @@ func TestRightInsert(t *testing.T) {
 	// pt.Insert(0)
 	// t.Logf("Depth: %v", pt.Depth())
 
-	for _, num := range inputs {
+	for _, num := range inputs[:] {
 		pt.Insert(num)
 		t.Logf("%v", pt)
 		if !pt.Search(num) {
@@ -288,14 +288,14 @@ func TestSearchHandbook(t *testing.T) {
 
 	// var pt PatriciaTrie
 	pt := NewPatriciaTrie()
-	for _, num := range inputs {
+	for _, num := range inputs[:] {
 		pt.Insert(num)
 	}
 
 	fmt.Printf("Patricia Trie:\n%v\n", pt)
 	t.Logf("%v", pt)
 
-	for _, num := range no_inputs {
+	for _, num := range no_inputs[:] {
 		if pt.Search(num) {
 			t.Fatalf("Num %v found and has not been inserted", num)
 		}
@@ -306,7 +306,7 @@ func TestSearchHandbook(t *testing.T) {
 func TestString(t *testing.T) {
 	inputs := []uint64{5, 0, 2, 8, 4, 10, 13, 9}
 	pt := NewPatriciaTrie()
-	for _, i := range inputs {
+	for _, i := range inputs[:] {
 		pt.Insert(i)
 	}
 
@@ -327,7 +327,7 @@ func TestRandomSearch(t *testing.T) {
 		}
 	}
 
-	for _, key := range keys {
+	for _, key := range keys[:] {
 		if !pt.Search(key) {
 			t.Logf("%v", pt)
 			t.Fatalf("Key %v not found and has been inserted", key)
@@ -349,7 +349,7 @@ func TestRandomSearch2(t *testing.T) {
 		}
 	}
 
-	for _, key := range keys {
+	for _, key := range keys[:] {
 		if !pt.Search(key) {
 			t.Logf("%v", pt)
 			t.Fatalf("Key %v not found and has been inserted", key)
@@ -361,10 +361,10 @@ func TestBigNums(t *testing.T) {
 	inputs := []uint64{8687274117644003430, 3847324218752143314, 8288325916900217827,
 		6703941274231124092, 12719366974275247368, 9372252975772899476}
 	pt := NewPatriciaTrie()
-	for _, k := range inputs {
+	for _, k := range inputs[:] {
 		t.Logf("%b [%v]\n", k, bits.Len64(k))
 	}
-	for i, key := range inputs {
+	for i, key := range inputs[:] {
 		fmt.Println("NEXT KEY INSERT START ========================================")
 		// key = key >> 50
 		pt.Insert(key)
@@ -378,11 +378,11 @@ func TestBigNums(t *testing.T) {
 
 func TestSmallNums(t *testing.T) {
 	inputs := []uint64{60, 53, 57, 46, 47, 32}
-	for _, k := range inputs {
+	for _, k := range inputs[:] {
 		t.Logf("%b\n", k)
 	}
 	pt := NewPatriciaTrie()
-	for i, key := range inputs {
+	for i, key := range inputs[:] {
 		pt.Insert(key)
 		t.Logf("Trie with key %v\n%v\n\n\n", i, pt.toString(false))
 		if !pt.Search(key) {

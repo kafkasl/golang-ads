@@ -7,7 +7,7 @@ import (
 )
 
 func contains(a *PatriciaTrieNode, list []*PatriciaTrieNode) bool {
-	for _, b := range list {
+	for _, b := range list[:] {
 		if b == a {
 			return true
 		}

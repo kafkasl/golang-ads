@@ -30,7 +30,7 @@ func NewTrie() Trie {
 
 func (t Trie) Insert(key string) {
 	currentNode := t.root
-	for _, letter := range key {
+	for _, letter := range key[:] {
 		if val, ok := currentNode.children[letter]; ok {
 			currentNode = val
 		} else {
@@ -44,7 +44,7 @@ func (t Trie) Insert(key string) {
 
 func (t Trie) Search(key string) bool {
 	currentNode := t.root
-	for _, letter := range key {
+	for _, letter := range key[:] {
 		if val, ok := currentNode.children[letter]; ok {
 			currentNode = val
 		} else {

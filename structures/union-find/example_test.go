@@ -43,7 +43,7 @@ func parseInput(input string) (adjMatrix [][]int) {
 	n, _ := strconv.Atoi(scanner.Text())
 
 	adjMatrix = make([][]int, n)
-	for i := range adjMatrix {
+	for i := range adjMatrix[:] {
 		adjMatrix[i] = make([]int, n)
 	}
 
@@ -100,7 +100,7 @@ func ExampleKruskal1() {
 
 	mst := kruskal(len(adjMatrix), vws)
 
-	for _, vw := range mst {
+	for _, vw := range mst[:] {
 		fmt.Printf("%v -> %v [%v] ", vw.origin, vw.destiny, vw.weight)
 	}
 
@@ -149,7 +149,7 @@ func ExampleConnectedComponents1() {
 
 	result := findConnectedComponents(sets, edges)
 
-	for i, r := range result {
+	for i, r := range result[:] {
 		if i > 0 {
 			fmt.Printf(" ")
 		}
@@ -165,7 +165,7 @@ func ExampleConnectedComponents2() {
 	sets := NewUnionFindSet(n)
 
 	result := findConnectedComponents(sets, edges)
-	for i, r := range result {
+	for i, r := range result[:] {
 		if i > 0 {
 			fmt.Printf(" ")
 		}

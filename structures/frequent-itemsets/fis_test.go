@@ -30,10 +30,10 @@ func TestPatriciaBuilding(t *testing.T) {
 	il := NewItemList(dataset, 3)
 	fmt.Printf("Size of Itemlist: %v\n", memory.Sizeof(il))
 
-	for _, tx := range il.txs {
+	for _, tx := range il.txs[:] {
 		strTx := ""
 		// orderedTx := orderTx(*tx, il)
-		for _, e := range *tx {
+		for _, e := range (*tx)[:] {
 			strTx += ToCharStr(e)
 		}
 		trie.Insert(strTx)

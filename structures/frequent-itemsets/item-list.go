@@ -54,7 +54,7 @@ type ThreadedList struct {
 
 func ListToString(list []uint) string {
 	str := "["
-	for i, e := range list {
+	for i, e := range list[:] {
 		if i > 0 {
 			str += " "
 		}
@@ -110,9 +110,9 @@ func NewItemList(dataset *[]*[]uint, minSupport uint) *ItemList {
 	var v map[uint]*Item = make(map[uint]*Item)
 	var txs []*[]uint = make([]*[]uint, len(*dataset))
 
-	for i, tx := range *dataset {
+	for i, tx := range (*dataset)[:] {
 		txs[i] = tx
-		for _, l := range *tx {
+		for _, l := range (*tx)[:] {
 			if item, ok := v[l]; ok {
 				item.count++
 				item.Insert(tx)
@@ -123,9 +123,9 @@ func NewItemList(dataset *[]*[]uint, minSupport uint) *ItemList {
 		}
 	}
 
-	for _, tx := range txs {
+	for _, tx := range txs[:] {
 		var newTx []uint
-		for _, l := range *tx {
+		for _, l := range (*tx)[:] {
 			if v[l].count >= minSupport {
 				newTx = append(newTx, l)
 
@@ -155,7 +155,7 @@ func (il ItemList) String() string {
 	}
 	sort.Sort(sort.Reverse(is))
 	str := ""
-	for _, item := range is {
+	for _, item := range is[:] {
 		str += fmt.Sprintf("%v [%v]: %v\n", ToCharStr(item.element), item.count, item.ptr)
 	}
 	return str

@@ -26,7 +26,7 @@ func (tn TrieNode) toString(prefix string) string {
 	sort.Sort(RuneSlice(keys))
 
 	idx := 0
-	for _, key := range keys {
+	for _, key := range keys[:] {
 
 		if idx < len(tn.children)-1 {
 			text += prefix + " ├─ " + string(key) + "[" + fmt.Sprintf("%v", tn.children[key].count) + "]" + "\n"
@@ -63,7 +63,7 @@ func (t Trie) String() string {
 
 func (t Trie) Insert(key string) {
 	currentNode := t.root
-	for _, letter := range key {
+	for _, letter := range key[:] {
 		if val, ok := currentNode.children[string(letter)]; ok {
 			val.count++
 			currentNode = val

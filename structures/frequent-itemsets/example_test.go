@@ -41,9 +41,9 @@ func ExampleBuildTrie() {
 
 	il := NewItemList(dataset, 3)
 
-	for _, tx := range il.txs {
+	for _, tx := range il.txs[:] {
 		strTx := ""
-		for _, e := range *tx {
+		for _, e := range (*tx)[:] {
 			strTx += ToCharStr(e)
 		}
 		t.Insert(strTx)

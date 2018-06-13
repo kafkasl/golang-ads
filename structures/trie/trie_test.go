@@ -10,7 +10,7 @@ func PrintFatal(t *testing.T, expected fmt.Stringer, got fmt.Stringer) {
 }
 
 func contains(list []string, target string) bool {
-	for _, element := range list {
+	for _, element := range list[:] {
 		if target == element {
 			return true
 		}
@@ -22,7 +22,7 @@ func TestWords(t *testing.T) {
 	words := []string{"mars", "malleus", "me", "stavro", "dent", "wiggin"}
 
 	trie := NewTrie()
-	for _, word := range words {
+	for _, word := range words[:] {
 		trie.Insert(word)
 	}
 
@@ -45,12 +45,12 @@ func TestSearch(t *testing.T) {
 	outputs := []bool{false, false, true, false, true, true}
 
 	trie := NewTrie()
-	for _, word := range inputs {
+	for _, word := range inputs[:] {
 		trie.Insert(word)
 	}
 
 	var found bool
-	for i, word := range searches {
+	for i, word := range searches[:] {
 		found = trie.Search(word)
 		if found != outputs[i] {
 			t.Fatalf("Expected: %v, but got: %v, for word %v\n", found, outputs[i], word)
@@ -73,7 +73,7 @@ func TestPrint(t *testing.T) {
     └─ e
 `
 	trie := NewTrie()
-	for _, word := range inputs {
+	for _, word := range inputs[:] {
 		trie.Insert(word)
 	}
 

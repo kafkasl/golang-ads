@@ -126,7 +126,7 @@ func (d *Dictionary) Insert(key int, value string) {
 				d.header.next = d.header.next[:h]
 				pred = pred[:h]
 			}
-			for i, _ := range pred {
+			for i, _ := range pred[:] {
 				if pred[i] == nil {
 					pred[i] = d.header
 				}
