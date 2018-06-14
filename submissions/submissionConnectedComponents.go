@@ -98,7 +98,7 @@ func main() {
 
 		result := findConnectedComponents(sets, edges)
 
-		for i, r := range result {
+		for i, r := range result[:] {
 			if i > 0 {
 				fmt.Printf(" ")
 			}
