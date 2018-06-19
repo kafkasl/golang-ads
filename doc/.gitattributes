@@ -1,0 +1,16 @@
+images/trie-patricia.png filter=lfs diff=lfs merge=lfs -text
+images/fis-patricia.png filter=lfs diff=lfs merge=lfs -text
+images/fis-trie.png filter=lfs diff=lfs merge=lfs -text
+images/skip-list.png filter=lfs diff=lfs merge=lfs -text
+images/itemlist.png filter=lfs diff=lfs merge=lfs -text
+images/mst.png filter=lfs diff=lfs merge=lfs -text
+images/skip-bound.png filter=lfs diff=lfs merge=lfs -text
+images/skip-height-length.png filter=lfs diff=lfs merge=lfs -text
+images/skip-size.png filter=lfs diff=lfs merge=lfs -text
+images/dataset-itemlist.png filter=lfs diff=lfs merge=lfs -text
+images/dataset.png filter=lfs diff=lfs merge=lfs -text
+images/fis-trie-patricia.png filter=lfs diff=lfs merge=lfs -text
+images/uf-sets.png filter=lfs diff=lfs merge=lfs -text
+images/UPC.jpg filter=lfs diff=lfs merge=lfs -text
+images/FIB.jpg filter=lfs diff=lfs merge=lfs -text
+images/trie-example.jpg filter=lfs diff=lfs merge=lfs -text
