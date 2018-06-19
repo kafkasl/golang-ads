@@ -2,19 +2,19 @@ package union_find
 
 import "fmt"
 
-type UnionFinSetwRP struct {
-	parent *UnionFinSetwRP
+type UnionFindSetwRP struct {
+	parent *UnionFindSetwRP
 	rank   int
 	value  int
 }
 
-func NewUnionFinSetwRP(value int) *UnionFinSetwRP {
-	uf := UnionFinSetwRP{nil, 0, value}
+func NewUnionFindSetwRP(value int) *UnionFindSetwRP {
+	uf := UnionFindSetwRP{nil, 0, value}
 	uf.parent = &uf
 	return &uf
 }
 
-func (uf *UnionFinSetwRP) Find() *UnionFinSetwRP {
+func (uf *UnionFindSetwRP) Find() *UnionFindSetwRP {
 	if uf.parent == uf {
 		return uf
 	}
@@ -22,7 +22,7 @@ func (uf *UnionFinSetwRP) Find() *UnionFinSetwRP {
 
 }
 
-func (uf *UnionFinSetwRP) Union(other *UnionFinSetwRP) *UnionFinSetwRP {
+func (uf *UnionFindSetwRP) Union(other *UnionFindSetwRP) *UnionFindSetwRP {
 	ufParent := uf.Find()
 	otherParent := other.Find()
 	if ufParent == otherParent {
@@ -41,7 +41,7 @@ func (uf *UnionFinSetwRP) Union(other *UnionFinSetwRP) *UnionFinSetwRP {
 
 }
 
-func (uf *UnionFinSetwRP) String() string {
+func (uf *UnionFindSetwRP) String() string {
 	if uf.parent == uf {
 		return fmt.Sprintf("[%v]: %v", uf.rank, uf.value)
 	}

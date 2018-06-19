@@ -40,13 +40,6 @@ func (tn TrieNode) toString(prefix string) string {
 	}
 	return text
 }
-func (tn TrieNode) String() string {
-	text := ""
-	for k, _ := range tn.children {
-		text += string(k) + " "
-	}
-	return fmt.Sprintf("Children: %v.", text)
-}
 
 type Trie struct {
 	root *TrieNode

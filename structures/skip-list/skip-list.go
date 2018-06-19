@@ -44,8 +44,7 @@ func NewDictionary(p float32) *Dictionary {
 func (d *Dictionary) Lookup(key int) *SkipListNode {
 	p := d.header
 	l := d.height - 1
-	// fmt.Printf("Header: %v\n", p)
-	// fmt.Printf("Next: %v\nNext key %v\n", p.next[0], p.next[0].key)
+
 	for l >= 0 {
 		if p.next[l] == nil || key <= p.next[l].key {
 			l--
@@ -66,8 +65,8 @@ func (d *Dictionary) Delete(key int) bool {
 	l := d.height - 1
 	pred := make([]*SkipListNode, d.height)
 	pred[0] = d.header
+	// find the key
 	for l >= 0 {
-		fmt.Printf("P: %v\nPred: %v\nNext %v\nL: %v \n\n", p, pred, p.next, l)
 		if p.next[l] == nil || key <= p.next[l].key {
 			pred[l] = p
 			l--
@@ -75,16 +74,19 @@ func (d *Dictionary) Delete(key int) bool {
 			p = p.next[l]
 		}
 	}
+	// key was present, return false
 	if p.next[0] == nil || p.next[0].key != key {
 		return false
-
+		// key is present remove
 	} else {
+
+		// rewire predecessors
 		for i := d.height - 1; i >= 0; i-- {
 			if pred[i].next[i] == p.next[0] {
 				pred[i].next[i] = p.next[0].next[i]
 			}
 		}
-		fmt.Printf("d.header %s\nd.header.next: %v\n", d.header, d.header.next)
+		//
 		for i := d.height - 1; i > 0; i-- {
 			if d.header.next[i] == nil || d.header.next[i].key == math.MaxInt64 {
 				d.height--
@@ -145,37 +147,45 @@ func (d *Dictionary) Insert(key int, value string) {
 }
 
 func (d *Dictionary) String() (str string) {
-	str = fmt.Sprintf("Skip List (height: %v)\n", d.height)
+	str = fmt.Sprintf("Skip List (height: %v)", d.height)
 	for p := d.header; p != nil; p = p.next[0] {
+		str += "\n"
 		for i := 0; i < d.height; i++ {
 			if i < len(p.next) || p.key == math.MaxInt64 {
 				str += "[ ] "
 			} else {
-				str += " |  "
+				str += " |"
+				if i < d.height-1 {
+					str += "  "
+				}
 			}
+
 		}
 		str += p.String() + "\n"
 
 		if p.next[0] != nil {
 			for i := 0; i < d.height; i++ {
 				if i <= len(p.next) {
-					str += " |  "
-				} else {
-					str += " |  "
+					str += " |"
+				}
+				if i < d.height-1 {
+					str += "  "
 				}
 
 			}
 			str += "\n"
 			for i := 0; i < d.height; i++ {
 				if i < len(p.next[0].next) || p.next[0].key == math.MaxInt64 {
-					str += " V  "
+					str += " V"
 				} else {
-					str += " |  "
+					str += " |"
+				}
+				if i < d.height-1 {
+					str += "  "
 				}
 
 			}
 		}
-		str += "\n"
 	}
 
 	return

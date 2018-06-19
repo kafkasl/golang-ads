@@ -34,7 +34,6 @@ func (ptn *PatriciaTrieNode) String() string {
 }
 
 func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
-	// fmt.Printf("Search: \nCurrent node: %v\nprev_bi %v\nbit_index %v\n", ptn, prev_bi, ptn.bit_index)
 
 	if prev_bi >= ptn.bit_index {
 		return key == ptn.key
@@ -47,7 +46,6 @@ func (ptn *PatriciaTrieNode) search(key uint64, prev_bi uint) bool {
 }
 
 func (ptn *PatriciaTrieNode) find(key uint64, prev_bi uint) uint64 {
-	// fmt.Printf("prev_bi %v, bit_index %v [%v]\n", prev_bi, ptn.bit_index, uint(prev_bi))
 	if prev_bi >= ptn.bit_index {
 		return ptn.key
 	}
@@ -143,7 +141,6 @@ func (pt *PatriciaTrie) Insert(key uint64) {
 		node := &PatriciaTrieNode{key, 0, nil, nil}
 		node.left = node
 		pt.header = node
-		fmt.Printf("pt, %p\n", &pt)
 
 	} else if pt.header == pt.header.left && key != pt.header.key {
 		// ONLY HEADER EXISTS
@@ -226,18 +223,9 @@ func (pt *PatriciaTrie) String() string {
 
 	header := gotree.New("Header")
 
+	// Passing true, makes  the printed keys in binary
 	pt.header.populateTree(&header, "", true)
 
-	return header.Print()
-
-}
-
-func (pt *PatriciaTrie) toString(binary bool) string {
-
-	header := gotree.New("Header")
-
-	pt.header.populateTree(&header, "", binary)
-
-	return header.Print()
+	return fmt.Sprintf("Patricia Trie:\n%v", header.Print())
 
 }

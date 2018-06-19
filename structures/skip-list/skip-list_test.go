@@ -127,11 +127,8 @@ func TestInsertDelete(t *testing.T) {
 		d.Insert(k, v)
 	}
 
-	fmt.Printf("%v\n", d)
 	for k, v := range input {
-		fmt.Printf("Removing: %v-%v\n", k, v)
 		removed := d.Delete(k)
-		fmt.Printf("Removed\n%v\n", d)
 
 		if removed != true {
 			t.Fatalf("Expected that element %v-%v was removed (instead it was not found)n", k, v)
@@ -139,9 +136,7 @@ func TestInsertDelete(t *testing.T) {
 	}
 
 	for k, v := range no_input {
-		fmt.Printf("2. Removing: %v-%v\n", k, v)
 		removed := d.Delete(k)
-		fmt.Printf("Removed\n%v\n", d)
 
 		if removed != false {
 			t.Fatalf("Element %v-%v was not present and delete reports that it was correctly removed \n", k, v)
@@ -204,39 +199,4 @@ func TestRandomInsert(t *testing.T) {
 
 	}
 
-}
-
-func TestString(t *testing.T) {
-	d := NewDictionary(1.1) // with 1.1 height is never augmented
-
-	output := d.String()
-	expected_output := ""
-
-	// if output != expected_output {
-	// 	t.Fatalf("Wrong string representation. Expected: \n%v\nFound: \n%v\n", expected_output, output)
-	// }
-
-	var input = map[int]string{
-		1: "aa",
-		2: "ab",
-		3: "ac",
-		4: "ba",
-		5: "bb",
-		6: "bc",
-		7: "ca",
-		8: "cb",
-		9: "cc",
-	}
-
-	for k, v := range input {
-		d.Insert(k, v)
-	}
-
-	output = d.String()
-
-	expected_output = ""
-
-	if output != expected_output {
-		t.Fatalf("Wrong string representation. Expected: \n%v\nFound: \n%v\n", expected_output, output)
-	}
 }

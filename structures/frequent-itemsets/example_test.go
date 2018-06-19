@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func ExamplePaper() {
+func ExamplePaperItemList() {
 
 	var dataset *[]*[]uint = &[]*[]uint{
 		&[]uint{1, 2, 4, 5, 6, 7, 8, 9},
@@ -64,5 +64,42 @@ func ExampleBuildTrie() {
 	//     └─ L[2]
 	//        └─ G[1]
 	//           └─ H[1]
+
+}
+
+func ExampleBuildPatriciaTrie() {
+	t := NewTrie()
+
+	var dataset *[]*[]uint = &[]*[]uint{
+		&[]uint{1, 2, 4, 5, 6, 7, 8, 9},
+		&[]uint{2, 3, 5, 12},
+		&[]uint{1, 2, 4, 6, 8, 12},
+		&[]uint{1, 2, 3, 4, 6, 7, 12},
+		&[]uint{2, 7, 8, 12},
+		&[]uint{1, 2, 4, 6, 9}}
+
+	il := NewItemList(dataset, 3)
+
+	for _, tx := range il.txs[:] {
+		strTx := ""
+		for _, e := range (*tx)[:] {
+			strTx += ToCharStr(e)
+		}
+		t.Insert(strTx)
+	}
+
+	pt := NewFISPatriciaTrie(t)
+
+	fmt.Printf("%v", pt)
+
+	// Output: Patricia trie:
+	//  └─ B[6]
+	//     ├─ ADF[4]
+	//     │  ├─ GH[1]
+	//     │  └─ L[2]
+	//     │     ├─ G[1]
+	//     │     └─ H[1]
+	//     └─ L[2]
+	//        └─ GH[1]
 
 }
