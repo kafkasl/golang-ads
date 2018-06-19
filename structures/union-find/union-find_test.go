@@ -63,8 +63,14 @@ func TestToString(t *testing.T) {
 
 	set := NewUnionFindSet(10)
 
+	set.Union(0, 1)
+	set.Union(2, 3)
+	set.Union(4, 5)
+	set.Union(6, 7)
+	set.Union(8, 9)
+
 	output := set.String()
-	correct := "0 1 2 3 4 5 6 7 8 9 "
+	correct := "1 1 3 3 5 5 7 7 9 9 "
 
 	if output != correct {
 		t.Fatalf("Output of String() is not correct. Expected %v, Got: %v", correct, output)

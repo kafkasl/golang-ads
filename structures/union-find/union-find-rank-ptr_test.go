@@ -1,6 +1,7 @@
 package union_find
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -71,14 +72,24 @@ func TestToStringSingleElement(t *testing.T) {
 
 func TestToStringwRP(t *testing.T) {
 
-	set := make([]*UnionFindSetwRP, 3)
-	for i := 0; i < 3; i++ {
+	set := make([]*UnionFindSetwRP, 4)
+	for i := 0; i < 4; i++ {
 		set[i] = NewUnionFindSetwRP(i)
-		set[i].Union(set[0])
 	}
+	set[1].Union(set[0])
+	set[3].Union(set[2])
+	// set[4].Union(set[2])
 
-	output := set[0].String()
-	correct := "[0]: 0 -> [1]: 1"
+	set[2].Union(set[1])
+	output := ""
+	for i := 0; i < 4; i++ {
+		output += fmt.Sprintf("\n%v", set[i])
+	}
+	correct := `
+[0]: 0 -> [1]: 1 -> [2]: 3
+[1]: 1 -> [2]: 3
+[0]: 2 -> [2]: 3
+[2]: 3`
 
 	if output != correct {
 		t.Fatalf("Output of String() is not correct. Expected %v, Got: %v", correct, output)

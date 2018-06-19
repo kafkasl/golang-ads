@@ -93,6 +93,8 @@ func TestInsert(t *testing.T) {
 		}
 	}
 
+	t.Logf("%v", d)
+
 }
 
 func TestInsertDelete(t *testing.T) {

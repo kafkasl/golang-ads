@@ -3,8 +3,7 @@ package skip_list
 import "fmt"
 
 func ExampleString() {
-	d := NewDictionary(1.1) // with 1.1 height is never augmented
-
+	d := NewDictionary(0.75)
 	var input = map[int]string{
 		1: "aa",
 		2: "ab",
@@ -22,37 +21,5 @@ func ExampleString() {
 	}
 
 	fmt.Printf("%v", d)
-	// Output: Skip List (height: 1)
-	// [ ] [-∞: start (1)]
-	//  |
-	//  V
-	// [ ] [1: aa (1)]
-	//  |
-	//  V
-	// [ ] [2: ab (1)]
-	//  |
-	//  V
-	// [ ] [3: ac (1)]
-	//  |
-	//  V
-	// [ ] [4: ba (1)]
-	//  |
-	//  V
-	// [ ] [5: bb (1)]
-	//  |
-	//  V
-	// [ ] [6: bc (1)]
-	//  |
-	//  V
-	// [ ] [7: ca (1)]
-	//  |
-	//  V
-	// [ ] [8: cb (1)]
-	//  |
-	//  V
-	// [ ] [9: cc (1)]
-	//  |
-	//  V
-	// [ ] [+∞: end (1)]
 
 }

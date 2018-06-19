@@ -147,41 +147,34 @@ func (d *Dictionary) Insert(key int, value string) {
 }
 
 func (d *Dictionary) String() (str string) {
-	str = fmt.Sprintf("Skip List (height: %v)", d.height)
+	str = fmt.Sprintf("Skip List (height: %v)\n", d.height)
 	for p := d.header; p != nil; p = p.next[0] {
 		str += "\n"
+
 		for i := 0; i < d.height; i++ {
 			if i < len(p.next) || p.key == math.MaxInt64 {
 				str += "[ ] "
 			} else {
-				str += " |"
-				if i < d.height-1 {
-					str += "  "
-				}
+				str += " |  "
 			}
-
 		}
 		str += p.String() + "\n"
 
 		if p.next[0] != nil {
 			for i := 0; i < d.height; i++ {
 				if i <= len(p.next) {
-					str += " |"
-				}
-				if i < d.height-1 {
-					str += "  "
+					str += " |  "
+				} else {
+					str += " |  "
 				}
 
 			}
 			str += "\n"
 			for i := 0; i < d.height; i++ {
 				if i < len(p.next[0].next) || p.next[0].key == math.MaxInt64 {
-					str += " V"
+					str += " V  "
 				} else {
-					str += " |"
-				}
-				if i < d.height-1 {
-					str += "  "
+					str += " |  "
 				}
 
 			}
