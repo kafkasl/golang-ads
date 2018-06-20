@@ -108,11 +108,14 @@
 
 
 \begin{abstract}
-The goal of this project is to create a ready-to-use Github repository of advanced data structures (ADS) for Golang (Go). Go is a relatively young language and, despite having many libraries, it is still lacking in terms of available advanced data structures. 
+The goal of this project is to create a ready-to-use Github repository of advanced data structures (ADS) for Golang (Go) and show how to use some of them. Go is a relatively young language and, despite having many libraries, it is still lacking in terms of available advanced data structures. 
 
-The language is statically typed and inherits a lot from C. However, it has Garbage Collection (GC) making it interesting (and easier) to implement some data structures (like skip lists) because we need not to remove orphan structures.
+The language is statically typed and inherits a lot from C. However, it has Garbage Collection (GC) making it attractive (and easier) to implement some data structures (like skip lists) because it is not necessary to remove orphan structures.
 
-Furthermore, Go has integrated testing. This allows most IDEs to highlight regions which regions of the code are not being covered by the tests. This seems specially useful to find which corner cases of a data structure are not covered.
+Furthermore, Go has integrated testing allowing most IDEs to highlight which regions of the code are not being covered by the tests. This seems especially appealing to find which corner cases of a data structure are not covered.
+
+The library consists of four different data structures and a use case where three of them are applied to a real problem: mining frequent itemsets. There are also competitive programming examples using the structures as well as a complexity analysis for many of them.
+
 \end{abstract}
 
 
@@ -129,7 +132,7 @@ The goal of this project is to create as data structures repository for Go langu
 
 \url{https://github.com/kafkasl/golang-ads}
 
-Specifically, the repository currently contains four ready-to-use standadlon advanced data structures (ADS) and three more applied to frequent itemsets mining (FIS): 
+Specifically, the repository currently contains four ready-to-use standalone advanced data structures (ADS) and three more applied to frequent itemsets mining (FIS): 
 
 \begin{itemize}
 \item Advanced Data Structures:
@@ -147,13 +150,13 @@ Specifically, the repository currently contains four ready-to-use standadlon adv
 \end{itemize}
 \end{itemize}
 
-All results, implementations, and examples have been coded from scratch in Go and each structure has an extensive test suite (labeled \textit{data-structure-test.go} which covers most of the possible usages. Furthermore, understanding new ADS may be challenging at first so every implemented structure defines a $String()$ method which gives a visual representation of it (for some structures, this methods are harder to implement than the actual structure). Section \ref{sec:visual} provides a brief overview and example of each visual representation.
+All results, implementations, and examples have been coded from scratch in Go, and each structure has an extensive test suite (labeled \textit{data-structure-test.go} which covers most of its possible usages. Furthermore, understanding new ADS may be challenging at first, so every implemented structure defines a $String()$ method which gives a visual representation of it (for some structures, these methods are harder to implement than the actual structure). Section \ref{sec:visual} provides brief descriptions and examples of each of these $toString()$ methods.
 
-Additionally, \textit{Union-find} and \textit{Trie} structures come with an extra file (\textit{example\_test.go}) with examples of how to use it. For Union-find, the examples are an implementation of Kruskal's \cite{Kruskal1956} minimum-spanning-tree and a competitive programming problem related to connected components (more details on subsection \ref{subsubsec:uf-examples}). For tries, the example is a competitive programming game described on \ref{subsubsec:trie-examples}. 
+Additionally, \textit{Union-find} and \textit{Trie} structures come with an extra file (\textit{example\_test.go}) with examples of how to use it. For Union-find, the examples are an implementation of Kruskal's \cite{Kruskal1956} minimum-spanning-tree and a competitive programming problem related to connected components (more details on subsection \ref{subsubsec:uf-examples}). For tries, the example is a competitive programming game described on subsection \ref{subsubsec:trie-examples}. 
 
 Both examples have been implemented using the data structure as a library. However, the actual submissions of the problems for evaluation are under folder $./submission$ because they need to be in a single file and read from standard input.
 
-All tests and examples can easily run with the command: \textit{go test} (for further details refer to Annex \ref{app:3}).
+The tests and examples for each structure can be easily run with the command: \textit{go test} (for further details refer to Annex \ref{app:3}).
 
 Finally, folder $./evaluation$ contains the performance/complexity tests of skip lists (see \ref{test-sl}) and the memory evaluation of the three ADS used for FIS mining (see \ref{subsec:fis-comparison}
  ).
@@ -180,7 +183,7 @@ Associated files:
 \item [\hspace{10mm} submissionConnectedComponents.go,] single-file implementation of the Jutge problem + stripped down UF set (as submitted to pass public/private tests and performance requirements). 
 \end{description}
 
-Union-find sets are an easy to implement data structure but they are quite powerful. The goal of this sets (also called Disjoint-set or merge-find sets) is to hold many disjoint sets and efficiently report whether two elements belong to the same group. They usually have two operations: union and find (no big surprise there). As the name suggests, $union(x, y)$ takes two sets and joins them. On the other hand, $find(x)$ returns the ancestor of element $x$. We will describe the concept of ancestor next, but basically, two elements are in the same set if they have the same ancestor.
+Union-find sets are an easy to implement data structure, but they are quite powerful. The goal of this sets (also called Disjoint-set or merge-find sets) is to hold many disjoint sets and efficiently report whether two elements belong to the same group. They usually have two operations: union and find (no big surprise there). As the name suggests, $union(x, y)$ takes two sets and joins them. On the other hand, $find(x)$ returns the ancestor of an element $x$. We will describe the concept of ancestor next, but basically, two elements are in the same set if they have the same ancestor.
 
 \begin{figure}[H]
 \centering
@@ -189,24 +192,24 @@ Union-find sets are an easy to implement data structure but they are quite power
 \label{fig:uf-set}
 \end{figure}
 
-Figure \ref{fig:uf-set} shows an example of UF set. Each time we call the $find(x)$ method we will climb the tree until we reach the ancestor (red nodes). If the ancestor of two nodes is the same, then they belong to the same set. 
+Figure \ref{fig:uf-set} shows an example of UF set. Each time we call the $find(x)$ method, we will climb the tree until we reach the ancestor (red nodes). If the ancestor of two nodes is the same, then they belong to the same set. 
 
-If the $join(x,y)$ operation is not correctly implemented we could end up with trees where height becomes $\mathcal{O} (n)$ (e.g. when always using the same node as parent). There are different ways of avoiding this. In this project we implemented two of them: Union-by-rank and path compression.
+If the $join(x,y)$ operation is not correctly implemented we could end up with trees where height becomes $\mathcal{O} (n)$ (e.g., when always using the same node as the parent). There are different ways of avoiding this. In this project, we implemented two of them: Union-by-rank and path compression.
 
 
 \subsection{Variants}
 
 \subsubsection{Union-by-rank}
 
-The first implementation uses pointers to keep track of ancestors and a $rank$ value which keeps the trees of the sets balanced. Each set is a triplet $(parent, rank, value)$ where parent is a pointer to the node's parent and is nil for single-item sets, the rank is a value used during union to decide which elements becomes parent of the other, value is the number representing the node. 
+The first implementation uses pointers to keep track of ancestors and a $rank$ value which keeps the trees of the sets balanced. Each set is a triplet $(parent, rank, value)$; parent is a pointer to the node's parent and is nil for single-item sets; the rank is a value used during union to decide which element becomes parent of the other; and the value is the number representing the node. 
 
-Initially, all nodes have rank 0. When joining two sets, if they have the same rank, one of them gets its rank incremented by 1 and becomes the parent of the other. If one of them has higher rank, it becomes the parent of the other directly without rank updates.
+Initially, all nodes have rank 0. When joining two sets, if they have the same rank, one of them gets its rank incremented by 1 and becomes the parent of the other. If one of them has a higher rank, it becomes the parent of the other directly without rank updates.
 
-Using this implementation, the height of a set is never going to be greater than $log(n)$ so the the $find(x)$ operation has a worst case cost of $\mathcal{O} (log n)$ (when the node $x$ is a leaf) and $union(x,y)$ has cost $\mathcal{O} (1)$ (just linking the pointer to a new parent).
+Using this implementation, the height of a set is going to be at most $log(n)$ so the the $find(x)$ operation has a worst case cost of $\mathcal{O} (log n)$ (when the node $x$ is a leaf) and $union(x,y)$ has cost $\mathcal{O} (1)$ (just linking the pointer to a new parent).
 
 \subsubsection{Path compression}
 
-The second implementation is based on flattening the trees to height 1 by compressing the path of a given node. It is implemented with a vector. Each position of the vector contains the position of the node's parent (or one of its ancestors thanks to path compression). In order to compress the paths, whenever the $find(x)$ operation is called, we use the chance to update the ancestor of the node to make it point directly to the root of the tree (instead of pointing to a parent or non-root node) as follows:
+The second implementation's idea is to flatten the trees to height one by compressing the path of a given node. It is implemented with a vector. Each position of the vector contains the position of the node's parent (or one of its ancestors thanks to path compression). In order to compress the paths, whenever the $find(x)$ operation is called, we use the chance to update the ancestor of the node to make it point directly to the root of the tree (instead of pointing to a parent or non-root node) as follows:
 
 \begin{verbatim}
 Find(node int):
@@ -236,24 +239,24 @@ where $\alpha (x)$ is Ackermann's inverse that grows extremely slowly,
   \end{cases}
 \]
 
-Path compression costs are better than Union-by-rank. However, the worst case cost of $find(x)$ in path compression is $\mathcal{O} (n)$, when we have a tree with height $n$ instead of the $log (n)$ of Union-by-rank. Despite that, in most scenarios the implementation details end up making Union-by-rank slower and it is rare to find a use case where we want to strictly ensure that worst case is bound because the amortized cost is not good enough.
+Path compression costs are better than Union-by-rank. However, the worst case cost of $find(x)$ in path compression is $\mathcal{O} (n)$, when we have a tree with height $n$ instead of the $log (n)$ of Union-by-rank. Despite that, in most scenarios, the implementation details end up making Union-by-rank slower, and it is rare to find a use case where we want to strictly ensure that worst case is bound because the amortized cost is not good enough.
 
 \subsection{Examples}
 \label{subsubsec:uf-examples} 
 
 \subsubsection{Minimum Spanning Trees: Kruskal}
 
-One of the best well-known examples for union-find sets is to implement Kruskal's minimum spanning tree (mst) algorithm. In order to find it, Kruskal's idea is to first order all edges by their weight. Then add edges greedily to the tree if they are not already both part of the same partition. To do so with the UF sets, we initialize each node as a UF set. Then, each time we need to check if two nodes are in the same set, we compare their "ancestor" with $find(x)$ function. If they are not, we join them and repeat the process until the mst is built.
+One of the best well-known examples for union-find sets is to implement Kruskal's minimum spanning tree (mst) algorithm. In order to find it, Kruskal's idea is to order all edges by their weight first. Then add edges greedily to the tree if they are not already both part of the same partition. To do so with the UF sets, we initialize each node as a UF set. Then, each time we need to check if two nodes are in the same set, we compare their "ancestor" with $find(x)$ function. If they are not, we join them and repeat the process until the mst is built.
 
 The example's implementation is divided into three calls:
 
 \begin{description}
-\item [\textbf{parseInput(input)}] takes triplets of $(origin\_node, destiny\_node, weight)$ and returns and adjacency matrix.
+\item [\textbf{parseInput(input)}] takes triplets of $(origin\_node, destiny\_node, weight)$ and returns an adjacency matrix.
 \item [\textbf{adjMatrixToPriorityQ(adjMatrix)}] takes the adjacency matrix and builds the priority queue of edges ordered by weight.
-\item [\textbf{kruskal(priorityQ)}] takes the priority Q of edges and returns list of triplets $(origin\_node, destiny\_node, weight)$ that conform the minimum spanning tree.
+\item [\textbf{kruskal(priorityQ)}] takes the priority Q of edges and returns the list of triplets $(origin\_node, destiny\_node, weight)$ that form the minimum spanning tree.
 \end{description}
 
-Figure \ref{fig:mst} shows the visual representation of the example in the repository. First, edges are ordered (top-left) and they are added one by one. Note that vertex $be: 4$ is not added because it would create a cycle $a \rightarrow e \rightarrow b \rightarrow a$ (i.e. node $e$ and $b$ are in the same union-find set).
+Figure \ref{fig:mst} shows the visual representation of the example in the repository. First, edges are ordered (top-left) and they are added one by one. Note that vertex $be: 4$ is not added because it would create a cycle $a \rightarrow e \rightarrow b \rightarrow a$ (i.e., node $e$ and $b$ are in the same union-find set).
 
 \begin{figure}[H]
 \centering
@@ -266,7 +269,7 @@ Figure \ref{fig:mst} shows the visual representation of the example in the repos
 
 This example is based on the Jutge programming problem described in Appendix \ref{app:jutge}. The goal is to count how many connected components does a graph $G = (V, E)$ have after inserting $k$ edges into it and starting with 0 edges.
 
-To solve this problem, we know that at the beginning (when no edges exist) the $\# connected\_components = | V | $. As in Kruskal's example, we initialize every vertex as a different UF set. Then, for each new vertex to add, we check if the vertex's nodes are in the UF set. If they are, then number of connected components remains the same. Otherwise, the number connected components decreases by one (two different sets/graphs are joined) and we join them. The number of connected components at each step is $ |V| - $ \# times two nodes were disjoint.
+To solve this problem, we know that at the beginning (when no edges exist) the $\# connected\_components = | V | $. As in Kruskal's example, we initialize every vertex as a different UF set. Then, for each new vertex to add, we check if the vertex's nodes are in the UF set. If they are, then the number of connected components remains the same. Otherwise, the number of connected components decreases by one (two different sets/graphs are joined) and we join them. The number of connected components at each step is $ |V| - $ \# times two nodes were disjoint.
 
 
 
@@ -289,10 +292,10 @@ Associated files:
 \end{description}
 
 
-Tries are an ordered search tree structure where children of a node are indexed by part of the value of an element. Frequently, they are used with strings and children are indexed by each letter of the word, or numbers indexed by some radix that decomposes the number into digits. From now on, we assume we are dealing with string/letter tries without loss of generality. 
+Tries are an ordered search tree structure where children of a node are indexed by part of the value of an element. Frequently, they are used with strings and children are indexed by each letter of the word or numbers indexed by some radix that decomposes the number into digits. From now on, we assume we are dealing with string/letter tries without loss of generality. 
 
 
-In a trie, each node contains a dictionary or an array of children indexed by the keys, and a boolean indicating if some word finishes on the node (called \textit{endOfWord} from here onwards) \footnote{ There are many trie implementations and some of them store in special nodes dangling from their corresponding search path. In this project, the element is its search path itself and the trie has no special nodes, just the bool indicating if a sequence finishes in a given node.}. Figure \ref{fig:trie-example} shows an example of an string trie.
+In a trie, each node contains a dictionary or an array of children indexed by the keys, and a boolean indicating if some word finishes on the node (called \textit{endOfWord} from here onwards) \footnote{ There are many trie implementations and some of them store in special nodes dangling from their corresponding search path. In this project, the element is its search path itself and the trie has no special nodes, just the bool indicating if a sequence finishes in a given node.}. Figure \ref{fig:trie-example} shows an example of a string trie.
 
 \begin{figure}[H]
 \centering
@@ -302,7 +305,7 @@ In a trie, each node contains a dictionary or an array of children indexed by th
 \end{figure}
 
 
-To check if an element is in the trie, we traverse the tree following at each node the child corresponding to the next letter of the string. If we arrive to a node with $endOfWord=true$ then the element is contained on the list. If we reach a null child (the child associated with the next key does not exist) or the final node has $endOfWord=false$, then element is not contained in the trie.
+To check if an element is in the trie, we traverse the tree following at each node the child corresponding to the next letter of the string. If we arrive at a node with $endOfWord=true$ then the element is contained on the list. If we reach a null child (the child associated with the next key does not exist) or the final node has $endOfWord=false$, then the element is not contained in the trie.
 
 \begin{verbatim}
 search(word):
@@ -323,7 +326,7 @@ search(word):
 \end{verbatim}
 
 
-To insert an element on the trie we just need to follow the search procedure up to a given node $n$. If we have traversed all the word, we just mark the node with $endOfWord=true$. Otherwise, for each remaining letter, we create a new node and make the last node point to it using the letter as index.
+To insert an element on the trie we need to follow the search procedure up to a given node $n$. If we have traversed all the word, we mark the node with $endOfWord=true$. Otherwise, for each remaining letter, we create a new node and make the last node point to it using the letter as the index.
 
 \begin{verbatim}
 insert(Trie, word):
@@ -343,18 +346,19 @@ insert(Trie, word):
 \end{verbatim}
 
 
-As a side note, when using an array representation, we need to know beforehand the length of our alphabet (our resize the array accordingly when new keys are added). On the other hand, in our implementation the children are indexed by a map of runes \footnote{ runes are a Go type which represent unicode characters (under-the-hood they are a int32)} keys, effectively allowing to use any of the 137,000 unicode characters as key.
+As a side note, when using an array representation, we need to know beforehand the length of our alphabet (or resize the array accordingly when new keys are added). On the other hand, in our implementation the children are indexed by a map of runes \footnote{ runes are a Go type which represent Unicode characters (under-the-hood they are a int32)} keys, effectively allowing to use any of the 137,000 Unicode characters as key.
 
 \subsection{Examples}
 
 \subsubsection{Codeforces: A lot of games}
 \label{subsubsec:trie-examples} 
 
-The example for tries is a problem from codeforces (see Appendix \ref{app:codeforces}). It simulates a game in which two players are given a set of words. They have to construct and string together such that it is a prefix of a least one of the words. Each player must add a letter each turn. If a player can not construct such a string in its turn loses. The game has $n$ rounds, and the loser of game $k-1$ starts playing game $k$. The winner of the game is the winner of the last round so it may be convenient to lose some rounds to start the next ones. 
+The example for tries is a problem from codeforces (see Appendix \ref{app:codeforces}). It simulates a game in which two players are given a set of words. They have to construct and string together such that it is a prefix of a least one of the words. Each player must add a letter each turn. If a player can not construct such a string in its turn, he loses the round. The game has $n$ rounds, and the loser of game $k-1$ starts playing game $k$. The winner of the game is the winner of the last round so it may be convenient to lose some rounds to start the next ones. 
 
-The strategy is to build a trie with all the available words and explore it recursively. Basically, the first nodes of the trie correspond to the first player's possible moves. The children of these nodes correspond to second player's, and so on. In each turn, we want to know if it is our decision to win or lose (we are able to win/lose regardless of the other player's movements). Expressed in a recursive fashion, at a certain step, we can win if the other player can not win with the children moves and vice-versa.
+The strategy is to build a trie with all the available words and explore it recursively. The first nodes of the trie correspond to the first player's possible moves. The children of these nodes correspond to second player's, and so on. In each turn, we want to know if we decide wether to win or lose (we are able to win/lose regardless of the other player's movements). Expressed recursively, at a particular step, we can win if the other player can not win with the children moves and vice-versa.
 
-This is the pseudocode for the recursive function
+Find below the pseudocode for the recursive function:
+
 \begin{verbatim}
 
 canWinLose(TrieNode): 
@@ -396,7 +400,7 @@ Associated files:
 Patricia (Practical Algorithm To Retrieve Information Coded In
 Alphanumeric) tries \cite{Knuth1998} are compressed tries \cite{Maly1976} with the values contained in the nodes themselves. 
 
-In compressed tries, instead of branching at each element (e.g. each letter of a word) we have an additional field $skip$ which indicates which is the next different element. The basic advantage with respect to compressed tries is that Patricia tries meld element and search nodes into one.
+In compressed tries, instead of branching at each element (e.g., each letter of a word) we have an additional field $skip$ which indicates which is the next different element. The essential difference with respect to compressed tries is that Patricia tries meld element and search nodes into one.
 
 Figure \ref{fig:trie-patricia} shows a compressed trie and its associated Patricia version.
 
@@ -408,9 +412,9 @@ Figure \ref{fig:trie-patricia} shows a compressed trie and its associated Patric
 \label{fig:trie-patricia}
 \end{figure}
 
-To find an element in a Patricia trie, we follow the path the same way as in compressed tries. However, instead of reaching an element node (a leaf) or null value, we will reach a node $x$ with a $skip$ value inferior to the previous node. If the value associated to node $x$ is the one we were looking for, then the element is present. Otherwise the element is not present in the trie.
+To find an element in a Patricia trie, we follow the path the same way as in compressed tries. However, instead of reaching an element node (a leaf) or null value, we will reach a node $x$ with a $skip$ value inferior to the previous node. If the value associated to node $x$ is the one we were looking for, then the element is present. Otherwise, the element is not present in the trie.
 
-This implementation of the Patricia tries follows strictly the description found in Handbook of Data Structures and Applications \cite{Mehta2005}. We do not elaborate further on the insert mechanism because Patricia tries start with an special node \textit{header} making the insertion a bit cumbersome because we have to deal with many cases (when no elements exist, when just the header exists, and when the header and more elements have been inserted).
+This implementation of the Patricia tries follows strictly the description found in Handbook of Data Structures and Applications \cite{Mehta2005}. We do not elaborate further on the insert mechanism because Patricia tries start with a special node \textit{header} making the insertion a bit cumbersome because we have to deal with many cases (when no elements exist, when just the header exists, and when the header and more elements have been inserted).
 
 
 
@@ -433,9 +437,9 @@ Associated files:
 \item [\hspace{10mm} skip-list\_performance.go,] evaluation of skip lists expected path, size, and height.
 \end{description}
 
-Skip lists \cite{Pugh1990} are a randomized search structure for ordered elements. They were invented as an alternatively to balanced trees. The randomization introduced makes the search, insert, and delete operations have a very good expected performance regardless of the input.
+Skip lists \cite{Pugh1990} are a randomized search structure for ordered elements. They were invented as an alternative to balanced trees. The randomization introduced makes the search, insert, and delete operations have a excellent expected performance regardless of the input.
 
-A skip list $\mathcal{S}$ for a set $\mathcal{X}$ is formed by a list of lists $\mathcal{L}_i$ . $\mathcal{L}_1$ is called level 1 list and contains all the elements. For $\mathcal{L}_i$ with $i > 1$, if an element $x$ belongs to  $\mathcal{L}_{i-1}$ then it belongs to $\mathcal{L}_i$ with probability $q$ s.t. $0 < q < 1$. The actual parameter set in a skip list is $p$ and $q = 1 - p$.
+A skip list $\mathcal{S}$ for a set $\mathcal{X}$ is formed by a list of lists $\mathcal{L}_i$ . $\mathcal{L}_1$ is called level 1 list and contains all the elements. For $\mathcal{L}_i$ with $i > 1$, if an element $x$ belongs to  $\mathcal{L}_{i-1}$ then, it belongs to $\mathcal{L}_i$ with probability $q$ s.t. $0 < q < 1$. The actual parameter set in a skip list is $p$ and $q = 1 - p$.
 
 The information is stored in a collection of nodes. Each node represents a value and contains a list of pointers to its successor nodes at each level. First and last node (header and NIL from here onwards) are always present and act as limits with values $- \infty$ and $+ \infty$ respectively.
 
@@ -476,12 +480,12 @@ search(x)
 	
 \end{verbatim}
 
-To insert an element, we follow the same procedure as the search. If we find the key, we just update the value. If not, we insert a new node between the $currentNode$ and its successor. Additionally, we need to keep track of the predecessors at each level to update their pointers. The height of the new node is computed using the $q$ parameter as stated earlier. Deleting a node is almost identical: when we reach the node to be removed we just rewire the predecessors that pointed to the deleted node to its successors.
+To insert an element, we follow the same procedure as the search. If we find the key, we update its value. If not, we insert a new node between the $currentNode$ and its successor. Additionally, we need to keep track of the predecessors at each level to update their pointers. The height of the new node is computed using the $q$ parameter as stated earlier. Deleting a node is almost identical: when we reach the node to be removed, we just rewire the predecessors that pointed to the deleted node to its successors.
 
 
 \subsection{Experiments}
 
-We now introduce the concept \textbf{length of a path} in order to evaluate the complexity of the operations in a skip list. The length of path is the number of steps required from the header's highest level until we find the desired node (or confirm that is not present). It is basically the number of times we jump to a successor plus the times to get down one level. The expected path length of a search is given by:
+We now introduce the concept \textbf{length of a path} in order to evaluate the complexity of the operations in a skip list. The length of a path is the number of steps required from the header's highest level until we find the desired node (or confirm that it is not present). It is the number of times we jump to a successor plus the times to get down one level. The expected path length of a search is given by:
 
 \begin{equation} \label{eq:bound}
 E[length(path)] \leq \frac{1}{q} * \log_{1/q} n + \frac{1}{p}
@@ -490,7 +494,7 @@ E[length(path)] \leq \frac{1}{q} * \log_{1/q} n + \frac{1}{p}
 The expected number of pointers per node is $1/p$ so when $p$ is close to 1 we have flatter skip lists. Alternatively, when $p$ is closer to 0, nodes become taller. Pugh, the author of the original paper, suggested using $p = 3/4$ as value for a good trade-off between space and time. 
 
 \label{test-sl}
-Figures \ref{fig:skip-height} and \ref{fig:skip-size} show the average skip list height, search path length, and memory footprint when varying the parameter $p$. Twenty tests were executed or each value of parameter $p$ and the mean values are reported. The inputs and searches were lists of randomly generated key of 10.000 and 100.000 elements respectively. 
+Figures \ref{fig:skip-height} and \ref{fig:skip-size} show the average skip list height, search path length, and memory footprint when varying the parameter $p$. Twenty tests were executed for each value of parameter $p$ and the mean values are reported. The inputs and searches were lists of randomly generated keys of 10.000 and 100.000 elements respectively. 
 
 As expected, the closer $p$ gets to 1, the smaller the memory footprint and average height. At first, path length also seems to decrease until an inflection point around 0.7 where it starts to increase. This point represents the best trade-off between time efficiency (small path length) and space efficiency (shorter nodes).
 
@@ -508,7 +512,7 @@ As expected, the closer $p$ gets to 1, the smaller the memory footprint and aver
 \label{fig:skip-size}
 \end{figure}
 
-Figure \ref{fig:skip-bound} shows the empirical mean height with respect to its theoretical upper bound computed as in equation \ref{eq:bound}. We observe that the bound is a lower than the mean for small values of $p$ and becomes bigger than it from $p \geq 0.6$ approximately. This could be caused by some hidden constant or maybe some implementation detail.
+Figure \ref{fig:skip-bound} shows the empirical mean height with respect to its theoretical upper bound computed as in equation \ref{eq:bound}. We observe that the bound is a lower than the mean for small values of $p$ and surpasses it from $p \geq 0.6$ onwards approximately. This could be caused by some hidden constant or maybe some implementation detail.
 
 
 
@@ -541,19 +545,19 @@ Associated files:
 
 Finding the Frequent Itemsets (FIS) of a record of transactions is a Data Mining problem. Given a list of transactions $\mathcal{T}$, each transaction $t$ is a variable-size subset of all available items $\mathcal{E}$. The goal is to find the sets of items which occur together most frequently in all transactions. The number of occurrences of a set $\mathcal{X}$ called support of the set $supp(\mathcal{X})$.
 
-A common transaction's representation is as list of lists of numbers (each number represents a different element). This structure can be quite big and the naive counting approach to find the frequent itemsets can be impractically slow. This section implements part of the work found in \cite{Pietracaprina2003}.
+A standard transaction's representation is as list of lists of numbers (each number represents a different element). This structure can be quite big and the naive counting approach to finding the frequent itemsets can be impractically slow. This section implements part of the work found in \cite{Pietracaprina2003}.
 
 In the paper, authors come up with an algorithm to mine frequent-sets efficiently. This project only implements the following data structures: Item List, Trie, Patricia Trie; and part of the comparison of their final sizes (Table 1, using Item lists instead of arrays). The actual results differ because we evaluate the size of the structures with a function that reports the actual data structure size in memory (instead of defining some parameters as they do).
 
-Usually, when mining itemsets, a minimum support threshold is defined in order to remove elements with less occurrences. The descriptions of how to filter by minimum threshold during the construction of the data structures are not detailed because in our case its done during the first item list creation and it is straightforward.
+Usually, when mining itemsets, a minimum support threshold is defined in order to remove elements with fewer occurrences. The descriptions of how to filter by minimum threshold during the construction of the data structures are not detailed because in our case its done during the first item list creation and it is straightforward.
 
 
 
 \subsection{Item List}
 
-Item List is the first representation of the transactions dataset. It is composed of a list of tuples \textit{(element, support, reference)} ordered by their support. The reference points to a threaded list. Each threaded list is formed by a transaction (shared by all lists) and a pointer to the next threaded list where the $element$ associated with a given tuple appears. Figure \ref{fig:dataset} shows an example of a dataset an its associated item list.
+Item List is the first representation of the transactions dataset. It is composed of a list of tuples \textit{(element, support, reference)} ordered by their support. The reference points to a threaded list. Each threaded list is formed by a transaction (shared by all lists) and a pointer to the next threaded list where the $element$ associated with a given tuple appears. Figure \ref{fig:dataset} shows an example of a dataset and its associated item list.
 
-Once the Item List is built, the transactions' elements are sorted according to their support. This data structure is not space efficient, it is a first step in order to build the trie representation of the dataset. The expect size of an item list is the average mean transaction length ($n$) times the number of transactions ($t$) plus $3*t$ (to store the tuples). Given an alphabet of $m$ elements the bound of the space ($s$) is:
+Once the Item List is built, the transactions' elements are sorted according to their support. This data structure is not space efficient; it is the first step to build the trie representation of the dataset. The expected size of an item list is the average mean transaction length ($n$) times the number of transactions ($t$) plus $3*t$ (to store the tuples). Given an alphabet of $m$ elements the bound of the space ($s$) is:
 
 $O(s) = n * t + 3 * m$
 
@@ -570,9 +574,9 @@ $O(s) = n * t + 3 * m$
 
 
 
-The trie used for frequent itemsets is similar to the one described in Section \ref{sec:tries}. The basic difference is that nodes now contain the support associated to the itemset formed by the path up to the node. Also, they no longer contain the $endOfWord$ boolean nor the $search()$ function because those operations make no sense in this context. 
+The trie used for frequent itemsets is similar to the one described in Section \ref{sec:tries}. The difference is that nodes now contain the support associated with the itemset formed by the path up to the node. Also, they no longer contain the $endOfWord$ boolean nor the $search()$ function because those operations make no sense in this context. 
 
-Figure \ref{fig:fis-trie} shows the trie that results of the sample dataset in Figure \ref{fig:dataset} and a minimum support of 3. For example, the prefix of node $D:4$ is $BAD$ indicating that $sup(BAD) = 4$.
+Figure \ref{fig:fis-trie} shows the trie that results of the sample dataset in Figure \ref{fig:dataset} and minimum support of 3. For example, the prefix of node $D:4$ is $BAD$ indicating that $sup(BAD) = 4$.
 
 The main advantage of the trie representation is that all common prefixes will not be duplicated and thus it will avoid information duplication while retaining the frequent itemsets' support. However, sparse datasets (where the ordered transactions share very small prefixes) will not be as space efficient because they will have many repeated nodes depending on which transaction they belong to. The next subsection describes how to improve the space complexity by using Patricia tries.
 
@@ -586,7 +590,7 @@ The main advantage of the trie representation is that all common prefixes will n
 
 \subsection{FIS Patricia Trie}
 
-The Patricia trie used for frequent itemsets mining is basically an ad-hoc implementation built from compressing a FIS trie structure. The idea is simple, all nodes with a single child and the same count need are part of the same frequent itemset and thus can be merged into a single node (avoiding unnecessary memory allocation for extra pointers, and duplicated counts).
+The Patricia trie used for frequent itemsets mining is an ad-hoc implementation built from compressing a FIS trie structure. The idea is simple, all nodes with a single child and the same count need are part of the same frequent itemset and thus can be merged into a single node (avoiding unnecessary memory allocation for extra pointers, and duplicated counts).
 
 Figure \ref{fig:fis-trie} shows the Patricia trie that results of the sample dataset in Figure \ref{fig:dataset} and a minimum support of 3.
 
@@ -632,26 +636,26 @@ The comparison code is placed in $./evaluation$ folder instead of as an example 
 \section{Conclusions}
 \label{sec:conclusions}
 
-In the first part of this project, we have implemented four data structures in Python. For each structure, we have provided a test coverage of over 90\%. Most of them have been applied to either competitive programming problems or usual applications showing their efficiency. In order to ease their usage, \textit{stringify} methods have been implemented for the most demanding ones like trees or skip lists. 
+In the first part of this project, we have implemented four data structures in Python. For each structure, we have provided a test coverage of over 90\%. Most of them have been applied to either competitive programming problems or typical applications showing their efficiency. In order to ease their usage, \textit{stringify} methods have been implemented for the most demanding ones like trees or skip lists. 
 
 For skip lists, we have evaluated their expected performance. The results obtained show that their complexity (represented by their path length) is indeed inside the theoretical bounds. We have also seen the approximate point at which the trade-off between space and time complexity is optimal (around $p=0.75$).
 
-For the second part, we have applied some of the implemented structures to a real world problem: mining frequent itemsets. The work done is mostly structural (i.e. representing the data with a given structure, not using it). As such, the comparisons performed are related to the space complexity each of the structures requires. Specifically, we have taken three structures - \textit{Item list, Trie, Patricia Trie} - and 5 common data mining datasets and measured the memory space they use.
+For the second part, we have applied some of the implemented structures to a real-world problem: mining frequent itemsets. The work done is mostly structural (i.e. representing the data with a given structure, not using it). As such, the comparisons performed are related to the space complexity each of the structures requires. Specifically, we have taken three structures - \textit{Item list, Trie, Patricia Trie} - and 5 common data mining datasets and measured the memory space they use.
 
-The results show what we expected: the item list (which contains always all transactions) is always the biggest one; the trie, which is able to compress common prefixes, improves a lot the space needed; and finally, the Patricia trie which is able to compress nodes, reduces the trie space even further, specially in sparse datasets.
+The results show what we expected: the item list (which always contains all transactions) is always the biggest one; the trie, which can compress common prefixes, improves a lot the space needed; and finally, the Patricia trie which can compress nodes, reduces the trie space even further, specially in sparse datasets.
 
-As a closing note, I would like to mention that Golang integrated testing (which highlights the paths not being tested) has been a highly valuable asset during the implementations. Being able to tell which execution paths of your data structure are not being tested greatly enhances one's ability to design test suites and find the corner cases. More than once, a structure which seemed perfectly fine, failed miserably when untested parts of its code were included in the test cases.
+As a closing note, it is worth mentioning that Golang integrated testing (which highlights the paths not being tested) has been a highly valuable asset during the implementations. Being able to tell which execution paths of the data structure are not being tested dramatically enhances one's ability to design test suites and find the corner cases. More than once, a structure which seemed perfectly fine, failed miserably when untested parts of its code were included in the test cases.
 
 
 
 \section{Future Work}
 \label{sec:future}
 
-Future work is concerned basically on adding more structures to the library. A worthy next candidate structure is the Binary Indexed Tree.
+Future work is concerned mainly with adding more structures to the library. A good next candidate structure is the Binary Indexed Tree.
 
-Improving the documentation inside the source files is also a must. The source files are quite lacking and understanding other's implementations of complex data structures (looking at you Patricia) may be challenging without well documented code (specially when implementations vary depending on the source material).
+Improving the documentation inside the source files is also a must. The source files are quite lacking and understanding other's implementations of complex data structures (looking at you Patricia) may be challenging without well-documented code (especially when implementations vary depending on the source material).
 
-Recently I have come across a repository with the same goal \footnote{ \url{https://github.com/emirpasic/gods}}. Given that the repository is older and has more contributors and maturity, the next goal will be to migrate the implementation to that repository (which does not contain a single one of the implemented ones here).
+Recently we have come across a repository with the same goal \footnote{ \url{https://github.com/emirpasic/gods}}. Given that the repository is older and has more contributors and maturity, the next goal will be to migrate the implementation to that repository (which does not contain a single one of the implemented ones here).
 
 
 
